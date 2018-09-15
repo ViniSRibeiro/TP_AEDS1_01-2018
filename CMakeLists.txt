@@ -1,12 +1,29 @@
 cmake_minimum_required(VERSION 3.9)
-project(AIRPORT_CONTROL C)
-
 set(CMAKE_C_STANDARD 99)
-
-set(AIRPORT_CONTROL_SRC
-        airport_control.c
-        )
-
-add_executable(AIRPORT_CONTROL ${AIRPORT_CONTROL_SRC})
-
 set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -D_AIRPORT_CONTROL_DEBUG")
+
+set(BASE_NAME "AIRPORT_CONTROL")
+project(${BASE_NAME} C)
+
+MACRO(create_project _name type)
+    set(name "${BASE_NAME}_${_name}")
+    set(src ${name}_SRC)
+    project("${name}" C)
+
+    set(src ${ARGN})
+
+    if ("${type}" STREQUAL "LIBRARY")
+        add_library("${name}" SHARED ${src})
+    elseif ("${type}" STREQUAL "EXECUTABLE")
+        add_executable("${name}" ${src})
+    else ()
+        message(FATAL_ERROR "create_project supports only LIBRARY and EXECUTABLE")
+    endif ()
+    unset(src)
+    unset(name)
+ENDMACRO()
+MACRO(include_project name other)
+    target_link_libraries(${BASE_NAME}_${name} ${BASE_NAME}_${other})
+ENDMACRO()
+
+add_subdirectory(common)
