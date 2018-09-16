@@ -9,20 +9,22 @@ struct __Voo {
 
 static bool needSeed = true;
 
-Voo Voo_new(FlightData Takeoff, FlightData Landing) {
+Voo Voo_new(FlightData takeoff, FlightData landing) {
     if (needSeed) {
         needSeed = false;
         srand((unsigned int) time(NULL));
     }
     Voo instance = malloc(sizeof(struct __Voo));
     instance->Vid = (VID) random();
-    instance->Takeoff = Takeoff;
-    instance->Landing = Landing;
+    instance->Takeoff = takeoff;
+    instance->Landing = landing;
     return instance;
 }
 
 SETTER(Voo, VID, Vid);
+
 SETTER(Voo, FlightData, Takeoff);
+
 SETTER(Voo, FlightData, Landing);
 
 void Voo_delete(Voo instance) {

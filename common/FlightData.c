@@ -6,11 +6,11 @@ struct __FlightData {
     int8_t Runway;
 };
 
-FlightData FlightData_new(Time Schedule, Aeroporto Airport, int8_t Runway) {
+FlightData FlightData_new(Time schedule, Aeroporto airport, int8_t runway) {
     FlightData instance = malloc(sizeof(struct __FlightData));
-    instance->Schedule = Schedule;
-    instance->Airport = Airport;
-    instance->Runway = Runway;
+    instance->Schedule = schedule;
+    instance->Airport = airport;
+    instance->Runway = runway;
     return instance;
 }
 

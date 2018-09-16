@@ -4,7 +4,7 @@
 
 typedef struct __FlightData *FlightData;
 
-FlightData FlightData_new(Time Schedule, Aeroporto Airport, int8_t Runway);
+FlightData FlightData_new(Time schedule, Aeroporto airport, int8_t runway);
 
 void FlightData_delete(FlightData instance);
 
