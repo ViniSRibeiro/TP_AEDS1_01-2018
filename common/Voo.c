@@ -1,5 +1,4 @@
 #include "Voo.h"
-#include <time.h>
 
 struct __Voo {
     VID Vid;
@@ -7,15 +6,9 @@ struct __Voo {
     FlightData Landing;
 };
 
-static bool needSeed = true;
-
 Voo Voo_new(FlightData takeoff, FlightData landing) {
-    if (needSeed) {
-        needSeed = false;
-        srand((unsigned int) time(NULL));
-    }
     Voo instance = malloc(sizeof(struct __Voo));
-    instance->Vid = (VID) random();
+    instance->Vid = UUID();
     instance->Takeoff = takeoff;
     instance->Landing = landing;
     return instance;

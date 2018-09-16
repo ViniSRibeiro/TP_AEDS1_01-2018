@@ -1,7 +1,6 @@
 #include "../base.h"
 #include "FlightData.h"
-
-typedef uint32_t VID;
+#include "VID.h"
 
 typedef struct __Voo *Voo;
 
