@@ -27,3 +27,4 @@ MACRO(include_project name other)
 ENDMACRO()
 
 add_subdirectory(common)
+add_subdirectory(test)
