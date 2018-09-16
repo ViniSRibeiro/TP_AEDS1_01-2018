@@ -60,7 +60,7 @@ type __CONCAT(name, get, field)(name ins) {\
 
 #define HSETTER(name, type, field) \
 HGETTER(name, type, field)\
-void __CONCAT(name, set, func)(name ins, type v);
+void __CONCAT(name, set, field)(name ins, type v);
 
 #define SETTER(name, type, field) \
 GETTER(name, type, field)\
