@@ -50,21 +50,21 @@
 //region Utility
 #define __CONCAT(x, y, z) x ## _ ## y ## z
 
-#define HGETTER(name, type, field, func) \
-type __CONCAT(name, get, func)(name ins);
+#define HGETTER(name, type, field) \
+type __CONCAT(name, get, field)(name ins);
 
-#define GETTER(name, type, field, func) \
-type __CONCAT(name, get, func)(name ins) {\
+#define GETTER(name, type, field) \
+type __CONCAT(name, get, field)(name ins) {\
     return ins->field;\
 }
 
-#define HSETTER(name, type, field, func) \
-HGETTER(name, type, field, func)\
+#define HSETTER(name, type, field) \
+HGETTER(name, type, field)\
 void __CONCAT(name, set, func)(name ins, type v);
 
-#define SETTER(name, type, field, func) \
-GETTER(name, type, field, func)\
-void __CONCAT(name, set, func)(name ins, type v) {\
+#define SETTER(name, type, field) \
+GETTER(name, type, field)\
+void __CONCAT(name, set, field)(name ins, type v) {\
     ins->field = v;\
 }
 
