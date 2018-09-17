@@ -25,7 +25,7 @@
 #define FPRINT(x, y, ...) fprintf(x, y, ##__VA_ARGS__)
 
 #define PRINT(x, ...) FPRINT(stdout, x, ##__VA_ARGS__)
-#define PRINTLN(x, ...) __MACRO_FUNCTION_BODY( PRINT(x, ___VA_ARGS___); PRINT("\n"); )
+#define PRINTLN(x, ...) __MACRO_FUNCTION_BODY( PRINT(x, ##__VA_ARGS__); PRINT("\n"); )
 
 #define ERROR(x, ...) FPRINT(stderr, x, ##__VA_ARGS__)
 #define ERRORLN(x, ...) __MACRO_FUNCTION_BODY( ERROR(x, ##__VA_ARGS__); ERROR("\n"); )
@@ -36,7 +36,7 @@
 
 #ifdef _AIRPORT_CONTROL_DEBUG
 #define DEBUG(x, ...) FPRINT(stdout, x, ##__VA_ARGS__)
-#define DEBUGLN(x, ...) __MACRO_FUNCTION_BODY( DEBUG(x, __VA_ARGS__); PRINT("\n"); )
+#define DEBUGLN(x, ...) __MACRO_FUNCTION_BODY( DEBUG(x, ##__VA_ARGS__); PRINT("\n"); )
 #else
 #define DEBUG(...) (void)0
 #define DEBUGLN(...) (void)0
