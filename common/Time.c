@@ -7,7 +7,7 @@ struct __Time {
 
 Time Time_new(uint8_t hour, uint8_t minute) {
     ASSERT(0 <= hour && hour < 24, "Hour must be between [0,24)");
-    ASSERT(0 <= minute && minute < 24, "Minute must be between [0,60)");
+    ASSERT(0 <= minute && minute < 60, "Minute must be between [0,60)");
     Time instance = malloc(sizeof(struct __Time));
     instance->Hour = hour;
     instance->Minute = minute;
