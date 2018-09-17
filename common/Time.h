@@ -1,3 +1,6 @@
+#ifndef _AIRPORT_CONTROL_COMMON_TIME_H
+#define _AIRPORT_CONTROL_COMMON_TIME_H
+
 #include "../base.h"
 
 typedef struct __Time *Time;
@@ -17,4 +20,4 @@ int Time_compareTo(Time this, Time other);
 
 void Time_delete(Time instance);
 
-
+#endif // _AIRPORT_CONTROL_COMMON_TIME_H

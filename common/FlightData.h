@@ -1,3 +1,6 @@
+#ifndef _AIRPORT_CONTROL_COMMON_FLIGHTDATA_H
+#define _AIRPORT_CONTROL_COMMON_FLIGHTDATA_H
+
 #include "../base.h"
 #include "Time.h"
 #include "Aeroporto.h"
@@ -14,3 +17,4 @@ HGETTER(FlightData, int8_t, Runway);
 
 void FlightData_delete(FlightData instance);
 
+#endif // _AIRPORT_CONTROL_COMMON_FLIGHTDATA_H
