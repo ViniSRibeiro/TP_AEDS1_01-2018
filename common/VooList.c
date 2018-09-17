@@ -106,6 +106,10 @@ void VooList_print(VooList this) {
 }
 
 void VooList_delete(VooList instance) {
+    for(_Node n = instance->first->next; n != NULL; free(n), n = n->next) {
+        Voo_delete(n->data);
+    }
+    free(instance->first);
     free(instance);
 }
 
