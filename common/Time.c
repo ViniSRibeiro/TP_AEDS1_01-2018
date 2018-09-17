@@ -1,4 +1,5 @@
 #include "Time.h"
+#include <time.h>
 
 struct __Time {
     uint8_t Hour;
@@ -14,8 +15,21 @@ Time Time_new(uint8_t hour, uint8_t minute) {
     return instance;
 }
 
+Time Time_now() {
+    time_t n = time(NULL);
+    struct tm *now = localtime(&n);
+    return Time_new((uint8_t) now->tm_hour, (uint8_t) now->tm_min);
+}
+
 SETTER(Time, uint8_t, Hour)
 SETTER(Time, uint8_t, Minute)
+
+void Time_updateToNow(Time this) {
+    time_t n = time(NULL);
+    struct tm *now = localtime(&n);
+    this->Hour = (uint8_t) now->tm_hour;
+    this->Minute = (uint8_t) now->tm_min;
+}
 
 int Time_compareTo(Time this, Time other) {
     if (this->Hour < other->Hour)

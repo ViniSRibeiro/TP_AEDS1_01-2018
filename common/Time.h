@@ -13,8 +13,12 @@ typedef struct __Time *Time;
  */
 Time Time_new(uint8_t hour, uint8_t minute);
 
+Time Time_now();
+
 HSETTER(Time, uint8_t, Hour)
 HSETTER(Time, uint8_t, Minute)
+
+void Time_updateToNow(Time);
 
 int Time_compareTo(Time this, Time other);
 
