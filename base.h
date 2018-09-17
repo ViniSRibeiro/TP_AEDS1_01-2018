@@ -48,23 +48,23 @@
 
 
 //region Utility
-#define __CONCAT(x, y, z) x ## _ ## y ## z
+#define __AIRPORT_CONCAT(x, y, z) x ## _ ## y ## z
 
 #define HGETTER(name, type, field) \
-type __CONCAT(name, get, field)(name ins);
+type __AIRPORT_CONCAT(name, get, field)(name ins);
 
 #define GETTER(name, type, field) \
-type __CONCAT(name, get, field)(name ins) {\
+type __AIRPORT_CONCAT(name, get, field)(name ins) {\
     return ins->field;\
 }
 
 #define HSETTER(name, type, field) \
 HGETTER(name, type, field)\
-void __CONCAT(name, set, field)(name ins, type v);
+void __AIRPORT_CONCAT(name, set, field)(name ins, type v);
 
 #define SETTER(name, type, field) \
 GETTER(name, type, field)\
-void __CONCAT(name, set, field)(name ins, type v) {\
+void __AIRPORT_CONCAT(name, set, field)(name ins, type v) {\
     ins->field = v;\
 }
 
