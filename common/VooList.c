@@ -12,7 +12,7 @@ struct __VooList {
 };
 
 static _Node _AllocateNode(Voo v/*, _Node next*/) {
-    _Node h = malloc(sizeof(_Node));
+    _Node h = malloc(sizeof(struct _Node));
     h->data = v;
     h->next = NULL;
     return h;
