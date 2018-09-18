@@ -14,6 +14,8 @@ Voo VooList_remove(VooList, VID);
 
 Voo VooList_find(VooList, VID);
 
+void VooList_forEach(VooList, void(*)(Voo));
+
 uint32_t VooList_size(VooList);
 
 void VooList_print(VooList);

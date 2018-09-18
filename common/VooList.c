@@ -92,6 +92,12 @@ Voo VooList_find(VooList this, VID vid) {
     );
 }
 
+void VooList_forEach(VooList this, void (*target)(Voo)) {
+    for(_Node f = this->first->next; f != NULL; f = f->next) {
+        target(f->data);
+    }
+}
+
 uint32_t VooList_size(VooList this) {
     return this->length;
 }
