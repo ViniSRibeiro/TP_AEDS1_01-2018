@@ -125,6 +125,27 @@ void pos(int line, int column) {
 }
 
 void drawActions() {
+
+#ifdef _WIN32
+	CONSOLE_SCREEN_BUFFER_INFO csbi;
+	GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
+	cols = csbi.srWindow.Right - csbi.srWindow.Left + 1;
+	rows = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
+#else
+	struct winsize w;
+	ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
+	cols = w.ws_col;
+	rows = w.ws_row;
+#endif
+
+	centerX = cols / 2;
+	centerY = rows / 2;
+
+	maxLength = cols - 24;
+
+	halfY = nOfActions / 2;
+	halfX = maxLength / 2;
+
     DEFAULT_COLOR();
     CLEAR();
     for (int i = 4; i < cols - 4; ++i) {
@@ -133,12 +154,16 @@ void drawActions() {
         pos(i, rows - 4);
         PC('-');
     }
-    for (int i = 4; i < rows - 3; ++i) {
+    for (int i = 5; i < rows - 4; ++i) {
         pos(4, i);
         PC('|');
         pos(cols - 4, i);
         PC('|');
     }
+	for (int i = 0; i < 4; ++i) {
+		pos(4 + (cols - 8) * (i / 2), 4 + (rows - 8) * (i % 2));
+		PC('+');
+	}
     for (int i = 0; i < nOfActions; ++i) {
         struct Action ac = actions[i];
         pos(centerX - halfX, centerY - halfY + i);
@@ -170,28 +195,12 @@ int interactive() {
 #ifdef _WIN32
 	hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
     readCh = _getch;
-	CONSOLE_SCREEN_BUFFER_INFO csbi;
-    GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
-    cols = csbi.srWindow.Right - csbi.srWindow.Left + 1;
-    rows = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
 #else
     readCh = getchar;
     system("/bin/stty raw");
-    struct winsize w;
-    ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
-    cols = w.ws_col;
-    rows = w.ws_row;
 #endif
 
-    centerX = cols / 2;
-    centerY = rows / 2;
-
     nOfActions = numOfActions();
-
-    maxLength = cols - 24;
-
-    halfY = nOfActions / 2;
-    halfX = maxLength / 2;
 
     while (drawActions(), 1) {
         int c = readCh();
@@ -224,9 +233,13 @@ int interactive() {
             case '\r': {
                 DEFAULT_COLOR_RUNNING();
                 CLEAR();
-                pos(1, 1);
+                pos(0, 0);
                 actions[selected].action();
+#ifdef _WIN32
+				getchar();
+#else
                 readCh();
+#endif
             }
 				break;
 			default:

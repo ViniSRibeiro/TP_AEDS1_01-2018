@@ -1,14 +1,39 @@
 #include "interactive_actions.h"
 #include <stdio.h>
 
-void PRINT() {
-    printf("PRINTED");
+static void PRINT() {
+    puts("PRINTED");
+}
+
+static void PRINT2() {
+	puts("PRINTED");
+	puts("PRINTED");
+	puts("PRINTED");
+	puts("PRINTED");
+	puts("PRINTED");
+}
+
+static void PRINT3() {
+	puts("PRINTED");
+	puts("PRINTED");
+	puts("PRINTED");
+	puts("PRINTED");
+	puts("PRINTED");
+	puts("PRINTED");
+	puts("PRINTED");
+	puts("PRINTED");
+	puts("PRINTED");
+	puts("PRINTED");
+	puts("PRINTED");
+	puts("PRINTED");
+	puts("PRINTED");
+	puts("PRINTED");
 }
 
 struct Action actions[] = {
         {"TEST", PRINT},
-        {"TEST2", PRINT},
-        {"ANOTHER ACTION", PRINT}
+        {"TEST2", PRINT2},
+        {"ANOTHER ACTION", PRINT3}
 };
 
 int numOfActions() {

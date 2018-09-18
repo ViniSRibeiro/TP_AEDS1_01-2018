@@ -3,11 +3,8 @@
 
 struct Action {
     char *name;
-
     void (*action)();
 };
-
-void PRINT();
 
 extern struct Action actions[];
 
