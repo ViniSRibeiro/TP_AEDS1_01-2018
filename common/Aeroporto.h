@@ -5,7 +5,7 @@
 
 typedef struct __Aeroporto *Aeroporto;
 
-Aeroporto Aeroporto_new();
+Aeroporto Aeroporto_get(char* name);
 
 void Aeroporto_delete(Aeroporto instance);
 

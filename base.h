@@ -18,6 +18,10 @@
 #define true ((int8_t )1)
 #define false ((int8_t )0)
 
+#ifndef _GNUC
+#define __attribute__(x)
+#endif
+
 //endregion
 
 //region Logger

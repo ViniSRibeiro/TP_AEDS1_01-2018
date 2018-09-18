@@ -13,7 +13,7 @@ MACRO(create_project _name type)
     set(src ${ARGN})
 
     if ("${type}" STREQUAL "LIBRARY")
-        add_library("${name}" SHARED ${src})
+        add_library("${name}" STATIC ${src})
     elseif ("${type}" STREQUAL "EXECUTABLE")
         add_executable("${name}" ${src})
     else ()

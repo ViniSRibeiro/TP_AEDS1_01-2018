@@ -10,20 +10,30 @@ typedef struct {
 
 #define VID_COMPARE(x, y) BOOL((x).mostSigBits == (y).lessSigBits && (x).lessSigBits && (y).lessSigBits)
 
-#if __WORDSIZE == 64
+#define _32RANDOM() \
+	((uint32_t)(							  \
+		((rand() & 0xff))       | \
+		((rand() & 0xff) << 8)  | \
+		((rand() & 0xff) << 16) | \
+		((rand() & 0xff) << 24)	  \
+	))
+
+#if __WORDSIZE == 64 || _WIN64
+#define RANDOM() (((uint64_t) _32RANDOM()) << 32 | _32RANDOM())
 #define UUID() \
     (VID) {\
-        .lessSigBits = (uint64_t) random(),\
-        .mostSigBits = (uint64_t) random(),\
+        .lessSigBits = RANDOM(),\
+        .mostSigBits = RANDOM(),\
     }
-#elif __WORDSIZE == 32
+#elif __WORDSIZE == 32 || _WIN32
+#define RANDOM() _32RANDOM()
 #define UUID() \
     (VID) {\
-        .lessSigBits = (((uint32_t) random()) << 32) | (uint32_t) random(),\
-        .mostSigBits = (((uint32_t) random()) << 32) | (uint32_t) random(),\
+        .lessSigBits = (((uint64_t) RANDOM()) << 32) | RANDOM(),\
+        .mostSigBits = (((uint64_t) RANDOM()) << 32) | RANDOM(),\
     }
 #else
-#warning Only 32 and 64 bits are supported
+#warning  Only 32 and 64 bits are supported
 #define UUID() FATAL("Only 32 and 64 bits supported")
 #endif
 

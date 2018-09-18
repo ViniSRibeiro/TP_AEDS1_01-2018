@@ -68,25 +68,25 @@ void VooSchedule_forEach(VooSchedule this, Time takeOff, Time landing, void(*tar
 
 struct VooSchedule_SearchResult VooSchedule_findPeakTime(VooSchedule this) {
     // TODO
-    struct VooSchedule_SearchResult result = {};
+    struct VooSchedule_SearchResult result;
     return result;
 }
 
 struct VooSchedule_SearchResult VooSchedule_findOffPeakTime(VooSchedule this) {
     // TODO
-    struct VooSchedule_SearchResult result = {};
+    struct VooSchedule_SearchResult result;
     return result;
 }
 
 struct VooSchedule_SearchResult VooSchedule_MostRecentUpdated(VooSchedule this) {
     // TODO
-    struct VooSchedule_SearchResult result = {};
+    struct VooSchedule_SearchResult result;
     return result;
 }
 
 struct VooSchedule_SearchResult VooSchedule_LessRecentUpdated(VooSchedule this) {
     // TODO
-    struct VooSchedule_SearchResult result = {};
+    struct VooSchedule_SearchResult result;
     return result;
 }
 

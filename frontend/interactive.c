@@ -16,7 +16,7 @@
 
 #define P(x) fputs(x, stdout)
 #define PC(x) fputc(x, stdout)
-#define ESC(x) P("\e["x)
+#define ESC(x) P("\033["x)
 #define PF(x, ...) printf(x, ##__VA_ARGS__)
 
 int cols, rows, centerX, centerY, selected = 0;
@@ -25,6 +25,43 @@ int maxLength = 0;
 int halfY, halfX;
 
 int (*readCh)();
+
+#ifdef _WIN32
+
+HANDLE hStdout;
+
+enum Attributes {
+	A_OFF = 0,
+	A_BOLD = FOREGROUND_INTENSITY,
+	A_UNDERSCORE = COMMON_LVB_UNDERSCORE,
+	A_BLINK_ON = 0,
+	A_REVERSE_VIDEO = COMMON_LVB_REVERSE_VIDEO,
+	A_CONCEALED_ON = 0
+};
+
+enum FColors {
+	F_BLACK = 0,
+	F_RED = FOREGROUND_RED,
+	F_GREEN = FOREGROUND_GREEN,
+	F_YELLOW = FOREGROUND_RED | FOREGROUND_GREEN,
+	F_BLUE = FOREGROUND_BLUE,
+	F_MAGENTA = FOREGROUND_RED | FOREGROUND_BLUE,
+	F_CYAN = FOREGROUND_GREEN | FOREGROUND_BLUE,
+	F_WHITE = FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE
+};
+
+enum BColors {
+	B_BLACK = 0,
+	B_RED = BACKGROUND_RED,
+	B_GREEN = BACKGROUND_GREEN,
+	B_YELLOW = BACKGROUND_RED | BACKGROUND_GREEN,
+	B_BLUE = BACKGROUND_BLUE,
+	B_MAGENTA = BACKGROUND_RED | BACKGROUND_BLUE,
+	B_CYAN = BACKGROUND_GREEN | BACKGROUND_BLUE,
+	B_WHITE = BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE
+};
+
+#else
 
 enum Attributes {
     A_OFF = 0,
@@ -56,18 +93,35 @@ enum BColors {
     B_CYAN = 46,
     B_WHITE = 47
 };
+
+#endif
+
+#ifdef _WIN32
+#define CLEAR() system("cls")
+#else
 #define CLEAR() ESC("2J")
-#define CLEAR_LINE() ESC("K")
+#endif
 #define DEFAULT_COLOR() color(A_BOLD, F_WHITE, B_YELLOW)
 #define DEFAULT_COLOR_SELECTED() color(A_BOLD, F_WHITE, B_MAGENTA)
 #define DEFAULT_COLOR_RUNNING() color(A_BOLD, F_WHITE, B_BLACK)
 
 void color(enum Attributes attr, enum FColors fore, enum BColors back) {
-    PF("\e[%d;%d;%dm", attr, fore, back);
+#ifdef _WIN32
+	SetConsoleTextAttribute(hStdout, attr | fore | back);
+#else
+    PF("\033[%d;%d;%dm", attr, fore, back);
+#endif
 }
 
 void pos(int line, int column) {
-    PF("\e[%d;%dH", column, line);
+#ifdef _WIN32
+	SetConsoleCursorPosition(hStdout, (COORD) {
+		.X = line,
+		.Y = column
+	});
+#else
+    PF("\033[%d;%dH", column, line);
+#endif
 }
 
 void drawActions() {
@@ -99,10 +153,24 @@ void drawActions() {
     pos(cols, rows);
 }
 
+void upArrow() {
+	if (selected > 0) {
+		selected--;
+	}
+}
+
+void downArrow() {
+	if (selected < nOfActions - 1) {
+		selected++;
+	}
+}
+
 int interactive() {
 
 #ifdef _WIN32
+	hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
     readCh = _getch;
+	CONSOLE_SCREEN_BUFFER_INFO csbi;
     GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
     cols = csbi.srWindow.Right - csbi.srWindow.Left + 1;
     rows = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
@@ -130,21 +198,29 @@ int interactive() {
         if (c == 4 || c == 3)
             return 0;
         switch (c) {
-            case '\e': {
+#ifdef _WIN32
+			case 224: {
+				c = readCh();
+				if(c == 72) {
+					upArrow();
+				} else if(c == 80) {
+					downArrow();
+				}
+			};
+				break;
+#else
+            case '\033': {
                 if (readCh() == '[') {
                     c = readCh();
                     if (c == 'A') {
-                        if (selected > 0) {
-                            selected--;
-                        }
+						upArrow();
                     } else if (c == 'B') {
-                        if (selected < nOfActions - 1) {
-                            selected++;
-                        }
+						downArrow();
                     }
                 }
             };
                 break;
+#endif
             case '\r': {
                 DEFAULT_COLOR_RUNNING();
                 CLEAR();
@@ -152,7 +228,9 @@ int interactive() {
                 actions[selected].action();
                 readCh();
             }
-            break;
+				break;
+			default:
+				break;			
         }
     }
 }
