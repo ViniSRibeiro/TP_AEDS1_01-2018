@@ -36,7 +36,8 @@ void VooSchedule_find(VooSchedule this, VID vid) {
     // TODO
 }
 
-inline void _VooSchedule_forEachInternal(VooScheduleItem list, void(*target)(Voo)) {
+inline void _VooSchedule_forEachInternal(VooScheduleItem list, void(*target)(Voo));
+void _VooSchedule_forEachInternal(VooScheduleItem list, void(*target)(Voo)) {
     VooList_forEach(VooScheduleItem_getList(list), target);
 }
 
