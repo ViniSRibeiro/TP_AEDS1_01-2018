@@ -7,7 +7,7 @@ int main(int argc, char **argv) {
     srand((unsigned int) time(NULL));
 
     if (argc > 1) {
-        return parse_file(argv[1]);
+        return ParseFile(argv[1]);
     } else {
         return interactive();
     }
