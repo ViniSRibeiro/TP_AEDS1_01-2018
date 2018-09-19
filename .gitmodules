@@ -1,0 +1,4 @@
+[submodule "FIFTH"]
+	path = FIFTH
+	url = git@github.com:viniciuslrangel/FIFTH.git
+	branch = master
