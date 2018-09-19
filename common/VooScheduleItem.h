@@ -14,6 +14,8 @@ HGETTER(VooScheduleItem, Time, LastUpdate);
 
 uint32_t VooScheduleItem_num(VooScheduleItem);
 
+void VooScheduleItem_updateTime(VooScheduleItem);
+
 void VooScheduleItem_delete(VooScheduleItem instance);
 
 #endif // _AIRPORT_CONTROL_COMMON_VOOSCHEDULEITEM_H

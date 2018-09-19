@@ -12,15 +12,16 @@ VooScheduleItem VooScheduleItem_new() {
     return instance;
 }
 
-VooList VooScheduleItem_getList(VooScheduleItem ins) {
-    Time_updateToNow(ins->LastUpdate);
-    return ins->List;
-};
+GETTER(VooScheduleItem, VooList, List);
 
 GETTER(VooScheduleItem, Time, LastUpdate);
 
 uint32_t VooScheduleItem_num(VooScheduleItem this) {
     return VooList_size(this->List);
+}
+
+void VooScheduleItem_updateTime(VooScheduleItem this) {
+    Time_updateToNow(this->LastUpdate);
 }
 
 void VooScheduleItem_delete(VooScheduleItem instance) {
