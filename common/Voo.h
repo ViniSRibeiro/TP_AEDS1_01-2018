@@ -15,6 +15,8 @@ HSETTER(Voo, FlightData, Takeoff);
 
 HSETTER(Voo, FlightData, Landing);
 
+void Voo_print(Voo);
+
 void Voo_delete(Voo instance);
 
 #endif // _AIRPORT_CONTROL_COMMON_VOO_H

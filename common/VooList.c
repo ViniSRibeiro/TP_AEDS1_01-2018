@@ -41,7 +41,7 @@ static Voo _VooList_removeRoutine(VooList list, _Node node, VID *_id) {
     return NULL;
 }
 
-static Voo _VooList_findRoutine(__attribute__((unused)) VooList list, _Node node, VID *_id) {
+static Voo _VooList_findRoutine(_Node node, VID *_id) {
     VID id = *_id;
     _Node next = node->next;
     if (next && VID_COMPARE(Voo_getVid(next->data), id)) {
@@ -60,7 +60,7 @@ VooList VooList_new() {
 void VooList_insert(VooList this, Voo voo) {
     _Node f = this->first;
     while (f != NULL) {
-        if(f->next != NULL) {
+        if (f->next != NULL) {
             _Node next = f->next;
             if (Time_compareTo(
                     FlightData_getSchedule(Voo_getTakeoff(voo)),
@@ -86,14 +86,13 @@ Voo VooList_remove(VooList this, VID vid) {
 
 Voo VooList_find(VooList this, VID vid) {
     return _Foreach(
-            this,
             (Voo (*)(VooList, _Node, void *)) _VooList_findRoutine,
             &vid
     );
 }
 
 void VooList_forEach(VooList this, void (*target)(Voo)) {
-    for(_Node f = this->first->next; f != NULL; f = f->next) {
+    for (_Node f = this->first->next; f != NULL; f = f->next) {
         target(f->data);
     }
 }
@@ -103,16 +102,13 @@ uint32_t VooList_size(VooList this) {
 }
 
 void VooList_print(VooList this) {
-    for(_Node f = this->first->next; f != NULL; f = f->next) {
-        Voo v = f->data;
-        VID id = Voo_getVid(v);
-        Time takeOff = FlightData_getSchedule(Voo_getTakeoff(v));
-        DEBUGLN("ID: %08lx%08lx %02d:%02d", id.mostSigBits, id.lessSigBits, Time_getHour(takeOff), Time_getMinute(takeOff));
+    for (_Node f = this->first->next; f != NULL; f = f->next) {
+        Voo_print(f->data);
     }
 }
 
 void VooList_delete(VooList instance) {
-    for(_Node n = instance->first->next; n != NULL; free(n), n = n->next) {
+    for (_Node n = instance->first->next; n != NULL; free(n), n = n->next) {
         Voo_delete(n->data);
     }
     free(instance->first);
