@@ -5,8 +5,8 @@
 
 typedef struct __Aeroporto *Aeroporto;
 
-Aeroporto Aeroporto_get(char* name);
+Aeroporto Aeroporto_get(char *Name);
 
-void Aeroporto_delete(Aeroporto instance);
+HGETTER(Aeroporto, char*, Name);
 
 #endif // _AIRPORT_CONTROL_COMMON_AEROPORT_H

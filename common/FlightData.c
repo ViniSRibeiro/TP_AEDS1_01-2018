@@ -22,6 +22,5 @@ GETTER(FlightData, int8_t, Runway);
 
 void FlightData_delete(FlightData instance) {
     Time_delete(instance->Schedule);
-    Aeroporto_delete(instance->Airport);
     free(instance);
 }
