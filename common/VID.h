@@ -4,19 +4,18 @@
 #include "../base.h"
 
 typedef struct {
-    uint64_t mostSigBits;
-    uint64_t lessSigBits;
+    uint32_t bits;
 } VID;
 
-#define VID_COMPARE(x, y) BOOL((x).mostSigBits == (y).lessSigBits && (x).lessSigBits && (y).lessSigBits)
+#define VID_COMPARE(x, y) BOOL((x).bits == (y).bits)
 
 #if RAND_MAX >= 0x7FFFFFFF
-#define _32RANDOM() \
+#define RANDOM() \
     ((uint32_t)(                    \
         ((rand() & 0x7FFFFFFF) << 16) | rand() \
     ))
 #else
-#define _32RANDOM() \
+#define RANDOM() \
     ((uint32_t)(							  \
         ((rand() & 0xff))       | \
         ((rand() & 0xff) << 8)  | \
@@ -28,12 +27,9 @@ typedef struct {
 #endif
 #endif
 
-#define RANDOM() ((uint64_t) _32RANDOM() << 32 | _32RANDOM())
-
 #define UUID() \
     (VID) {\
-        .lessSigBits = RANDOM(),\
-        .mostSigBits = RANDOM(),\
+        .bits = RANDOM(),\
     }
 
 #endif //AIRPORT_CONTROL_VID_H
