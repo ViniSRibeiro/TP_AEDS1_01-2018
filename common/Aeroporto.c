@@ -14,7 +14,7 @@ Aeroporto Aeroporto_get(char *Name) {
             return storage[i];
         }
     }
-    Aeroporto *newArr = realloc(storage, storageLength + 1);
+    Aeroporto *newArr = realloc(storage, sizeof(void *) * (storageLength + 1));
     if (newArr) {
         storage = newArr;
         Aeroporto air = malloc(sizeof(struct __Aeroporto));
