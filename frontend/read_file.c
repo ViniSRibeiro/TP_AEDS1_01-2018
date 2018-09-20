@@ -5,40 +5,58 @@
 #include "custom_words.h"
 
 static DString ReplaceHour(DString line) {
-    if (DString_indexOf(line, ':') == -1) {
-        return line;
-    }
     char *rawLine = DString_raw(line);
     unsigned long rawLength = DString_length(line);
-    int c = 0;
-    for (int i = 0; i < rawLength; ++i) {
-        if (rawLine[i] == ':') {
-            c += 2;
+
+    DString newLine = DString_new("");
+
+    int start = 0;
+    int end = (int) rawLength;
+
+    while (rawLine[start++] == ' ');
+    while (rawLine[end--] == ' ' || rawLine[end] == '\n' || rawLine[end] == '\r');
+    start--;
+    end++;
+
+    for (int i = 0; i < start; ++i) {
+        DString_appendChar(newLine, ' ');
+    }
+    enum {
+        NONE, STR
+    } state = NONE;
+    for (int i = start; i < end - 2; ++i) {
+        char c = rawLine[i];
+        switch (state) {
+            case NONE: {
+                if (c == ' ') {
+                    DString_appendChar(newLine, c);
+                } else {
+                    DString_appendChar(newLine, '"');
+                    DString_appendChar(newLine, c);
+                    state = STR;
+                }
+            }
+                break;
+            case STR: {
+                if (c == ' ') {
+                    DString_appendChar(newLine, '"');
+                    state = NONE;
+                }
+                DString_appendChar(newLine, c);
+            }
+                break;
         }
     }
-    c += DString_length(line);
-    char *newLine = malloc(sizeof(char) * c + 1);
-    newLine[sizeof(char) * c] = 0;
-    int j = 0;
-    for (int i = 0; i < rawLength; ++i) {
-        if (rawLine[i + 2 < rawLength ? i + 2 : '\0'] == ':') {
-            newLine[j++] = '"';
-            newLine[j++] = rawLine[i++];
-            newLine[j++] = rawLine[i++];
-            newLine[j++] = rawLine[i++];
-            newLine[j++] = rawLine[i++];
-            newLine[j++] = rawLine[i];
-            newLine[j++] = '"';
-        } else {
-            newLine[j++] = rawLine[i];
-        }
-    }
-    return DString_create(newLine);
+    DString sub = DString_substr(line, -3, -1);
+    DString_append(newLine, sub);
+    DString_delete(sub);
+    DString_delete(line);
+    return newLine;
 }
 
 static void RunCode(DString data, char *fileName) {
     VmState vm = CreateVm();
-    RegisterCustomWords();
+    RegisterAirportWords();
     Lexer(vm, fileName, DString_raw(data), DString_length(data));
     RunVm(vm);
 }
@@ -76,10 +94,10 @@ int ParseFile(char *fileName) {
     unsigned long start = 0;
     unsigned long pos = 0;
 
-    char c = buffer[0];
+    char c = UPPER(buffer[0]);
     do {
         if (state == NEW_LINE) {
-            if (c != '\n' && c != '\r') {
+            if (c != '\n' && c != '\r' && c != ' ') {
                 char cNext = buffer[pos + 1];
                 state = ('a' <= c && c <= 'm' && (cNext == ' ' || cNext == '\n' || cNext == '\r')) ? CUSTOM : NORMAL;
                 start = pos;
