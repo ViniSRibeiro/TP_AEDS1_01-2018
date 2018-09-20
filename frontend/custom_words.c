@@ -6,20 +6,186 @@
 #include "../FIFTH/src/words.h"
 #include "../common/VooSchedule.h"
 
+#define GET_TIME(x, y) \
+do {\
+    int pos = DString_indexOf(x, ':');\
+    if(pos == -1) {\
+        FATAL("%s is not a valid time!", DString_raw(x));\
+    }\
+    DString h = DString_substr(x, 0, pos);\
+    DString m = DString_substr(x, pos + 1, -1);\
+    (y) = Time_new(strtol(DString_raw(h), NULL, 10), strtol(DString_raw(m), NULL, 10));\
+    DString_delete(h);\
+    DString_delete(m);\
+    DString_delete(x);\
+} while(0)
+
 static VooSchedule item = NULL;
 
-static void OperationA() {
-    if(item != NULL) {
+static void OperationA(__attribute__((unused)) ProgramStack stack) {
+    if (item != NULL) {
         VooSchedule_delete(item);
     }
     item = VooSchedule_new();
 }
 
-static void OperationB() {
+static void OperationB(ProgramStack stack) {
+    DString runwayStr, landingAir, takeOffAir, landingTimeStr, takeOffTimeStr;
+    POP_STRING(runwayStr, stack);
+    POP_STRING(landingAir, stack);
+    POP_STRING(takeOffAir, stack);
+    POP_STRING(landingTimeStr, stack);
+    POP_STRING(takeOffTimeStr, stack);
 
+    Time landingTime, takeOffTime;
+    GET_TIME(landingTimeStr, landingTime);
+    GET_TIME(takeOffTimeStr, takeOffTime);
+
+    VooSchedule_insert(
+            item,
+            Voo_new(
+                    FlightData_new(
+                            takeOffTime,
+                            Aeroporto_get(DString_raw(takeOffAir)),
+                            (int8_t) strtol(DString_raw(runwayStr), NULL, 10)
+                    ),
+                    FlightData_new(
+                            landingTime,
+                            Aeroporto_get(DString_raw(landingAir)),
+                            -1
+                    )
+            )
+    );
+    DString_delete(runwayStr);
+    DString_delete(takeOffAir);
+    DString_delete(landingAir);
 }
 
-void RegisterCustomWords() {
+
+static void OperationC(ProgramStack stack) {
+    DString id;
+    POP_STRING(id, stack);
+    Voo v = VooSchedule_remove(item, (VID) {
+            .bits = (uint32_t) strtol(DString_raw(id), NULL, 16)
+    });
+    if (v) {
+        PRINTLN("O voo foi removido");
+        Voo_print(v);
+    } else {
+        PRINTLN("Voo nao encontrado");
+    }
+}
+
+
+static void OperationD(ProgramStack stack) {
+    DString id;
+    POP_STRING(id, stack);
+    Voo v = VooSchedule_find(item, (VID) {
+            .bits = (uint32_t) strtol(DString_raw(id), NULL, 16)
+    });
+    DString_delete(id);
+    if (v) {
+        Voo_print(v);
+    } else {
+        PRINTLN("Voo nao encontrado");
+    }
+}
+
+
+static void OperationE(ProgramStack stack) {
+    DString landingTimeStr, takeOffTimeStr;
+    POP_STRING(landingTimeStr, stack);
+    POP_STRING(takeOffTimeStr, stack);
+    Time landingTime, takeOffTime;
+    GET_TIME(landingTimeStr, landingTime);
+    GET_TIME(takeOffTimeStr, takeOffTime);
+    VooSchedule_forEach(item, takeOffTime, landingTime, Voo_print);
+    Time_delete(landingTime);
+    Time_delete(takeOffTime);
+}
+
+
+static void OperationF(ProgramStack stack) {
+    DString takeOffTimeStr;
+    POP_STRING(takeOffTimeStr, stack);
+    Time takeOffTime;
+    GET_TIME(takeOffTimeStr, takeOffTime);
+    VooSchedule_forEach(item, takeOffTime, NULL, Voo_print);
+    Time_delete(takeOffTime);
+}
+
+
+static void OperationG(ProgramStack stack) {
+    DString landingTimeStr;
+    POP_STRING(landingTimeStr, stack);
+    Time landingTime;
+    GET_TIME(landingTimeStr, landingTime);
+    VooSchedule_forEach(item, NULL, landingTime, Voo_print);
+    Time_delete(landingTime);
+}
+
+
+static void OperationH(__attribute__((unused)) ProgramStack stack) {
+    VooSchedule_forEach(item, NULL, NULL, Voo_print);
+}
+
+
+static void OperationI(__attribute__((unused)) ProgramStack stack) {
+    struct VooSchedule_SearchResult result = VooSchedule_findPeakTime(item);
+    PRINTLN("Intervalo de pico:"
+            "\n> Decolagem %02d:00"
+            "\n> Pouso %02d:00"
+            "\n> Numero de voos: %d",
+            result.takeOff, result.landing,
+            VooScheduleItem_num(result.list)
+    );
+}
+
+
+static void OperationJ(__attribute__((unused)) ProgramStack stack) {
+    struct VooSchedule_SearchResult result = VooSchedule_findOffPeakTime(item);
+    PRINTLN("Intervalo menos movimentado:"
+            "\n> Decolagem %02d:00"
+            "\n> Pouso %02d:00"
+            "\n> Numero de voos: %d",
+            result.takeOff, result.landing,
+            VooScheduleItem_num(result.list)
+    );
+}
+
+
+static void OperationK(__attribute__((unused)) ProgramStack stack) {
+    struct VooSchedule_SearchResult result = VooSchedule_findMostRecentUpdated(item);
+    Time t = VooScheduleItem_getLastUpdate(result.list);
+    PRINTLN("Ultima lista alterada:"
+            "\n> Decolagem %02d:00"
+            "\n> Pouso %02d:00"
+            "\n> Horario: %02d:%02d",
+            result.takeOff, result.landing,
+            Time_getHour(t), Time_getMinute(t)
+    );
+}
+
+
+static void OperationL(__attribute__((unused)) ProgramStack stack) {
+    struct VooSchedule_SearchResult result = VooSchedule_findLessRecentUpdated(item);
+    Time t = VooScheduleItem_getLastUpdate(result.list);
+    PRINTLN("Lista a mais tempo sem alterar:"
+            "\n> Decolagem %02d:00"
+            "\n> Pouso %02d:00"
+            "\n> Horario: %02d:%02d",
+            result.takeOff, result.landing,
+            Time_getHour(t), Time_getMinute(t)
+    );
+}
+
+
+static void OperationM(__attribute__((unused)) ProgramStack stack) {
+    bool s = VooSchedule_isSparse(item);
+    PRINTLN("Esparca: %s", s ? "Sim" : "Nao");
+}
+
+void RegisterAirportWords() {
     struct WordEntry wordEntry[] = {
             {"TA", OperationA},
             {"TB", OperationB},

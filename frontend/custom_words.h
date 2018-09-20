@@ -5,6 +5,6 @@
 #ifndef AIRPORT_CONTROL_CUSTOM_WORDS_H
 #define AIRPORT_CONTROL_CUSTOM_WORDS_H
 
-void RegisterCustomWords();
+void RegisterAirportWords();
 
 #endif //AIRPORT_CONTROL_CUSTOM_WORDS_H
