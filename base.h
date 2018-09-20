@@ -8,7 +8,7 @@
 
 //region Constants
 
-#ifndef _GNUC
+#ifndef __GNUC__
 #define __attribute__(x)
 #endif
 
