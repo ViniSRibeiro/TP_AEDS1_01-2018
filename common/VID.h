@@ -7,7 +7,7 @@ typedef struct {
     uint32_t bits;
 } VID;
 
-#define VID_COMPARE(x, y) BOOL((x).bits == (y).bits)
+#define VID_COMPARE(x, y) ((bool)((x).bits == (y).bits))
 
 #if RAND_MAX >= 0x7FFFFFFF
 #define RANDOM() \

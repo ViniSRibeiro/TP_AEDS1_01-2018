@@ -137,7 +137,7 @@ bool VooSchedule_isSparse(VooSchedule this) {
                 any++;
             }
     );
-    return BOOL(any > total);
+    return any > total;
 }
 
 void VooSchedule_delete(VooSchedule instance) {
