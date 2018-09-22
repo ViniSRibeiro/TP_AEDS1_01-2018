@@ -9,5 +9,16 @@ a
     b 07:30 09:00 LEC CNF 2
     b 15:30 16:20 LEC CNF 2
 ;
-insert
-h
+:de dup println ;
+:rand
+    RANDTIME RANDTIME RANDAIR RANDAIR "3" TB
+    dup
+    0 <
+    if
+        -1 +
+        rand
+    then
+;
+50 rand
+// insert
+gui

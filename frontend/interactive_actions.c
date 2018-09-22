@@ -1,39 +1,19 @@
 #include "interactive_actions.h"
 #include <stdio.h>
 
-static void PRINT() {
-    puts("PRINTED");
-}
-
-static void PRINT2() {
-	puts("PRINTED");
-	puts("PRINTED");
-	puts("PRINTED");
-	puts("PRINTED");
-	puts("PRINTED");
-}
-
-static void PRINT3() {
-	puts("PRINTED");
-	puts("PRINTED");
-	puts("PRINTED");
-	puts("PRINTED");
-	puts("PRINTED");
-	puts("PRINTED");
-	puts("PRINTED");
-	puts("PRINTED");
-	puts("PRINTED");
-	puts("PRINTED");
-	puts("PRINTED");
-	puts("PRINTED");
-	puts("PRINTED");
-	puts("PRINTED");
+static void PRINT3(VooSchedule nothing) {
+    PRINTLN("TEST STR");
+    PRINTLN("TEST STR");
+    PRINTLN("TEST STR");
+    PRINTLN("TEST STR");
 }
 
 struct Action actions[] = {
-        {"TEST", PRINT},
-        {"TEST2", PRINT2},
-        {"ANOTHER ACTION", PRINT3}
+        {"Test", PRINT3},
+        /*{"Inserir voo", ...},
+        {"Remover voo", ...},
+        {"Procurar voo", ...},
+        {"Listar voos", ...},*/
 };
 
 int numOfActions() {

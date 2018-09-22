@@ -5,6 +5,7 @@
 #include "custom_words.h"
 #include "../FIFTH/src/words.h"
 #include "../common/VooSchedule.h"
+#include "interactive.h"
 
 #define GET_TIME(x, y) \
 do {\
@@ -185,21 +186,45 @@ static void OperationM(__attribute__((unused)) ProgramStack stack) {
     PRINTLN("Esparca: %s", s ? "Sim" : "Nao");
 }
 
+static void RandTime(ProgramStack stack) {
+    char time[6];
+    time[5] = 0;
+    sprintf(time, "%02d:%02d", rand() % 24, rand() % 60); // NOLINT(cert-msc30-c,cert-msc50-cpp)
+    PStack_push(stack, STACK_STR(DString_new(time)));
+}
+
+static void RandAir(ProgramStack stack) {
+    char air[4];
+    air[3] = 0;
+    static uint8_t n = 'Z' - 'A' + 1;
+    for (int i = 0; i < 3; ++i) {
+        air[i] = (char) ('A' + rand() % n); // NOLINT(cert-msc30-c,cert-msc50-cpp)
+    }
+    PStack_push(stack, STACK_STR(DString_new(air)));
+}
+
+static void StartInteractive(ProgramStack stack) {
+    interactive(item);
+}
+
 void RegisterAirportWords() {
     struct WordEntry wordEntry[] = {
-            {"TA", OperationA},
-            {"TB", OperationB},
-            {"TC", OperationC},
-            {"TD", OperationD},
-            {"TE", OperationE},
-            {"TF", OperationF},
-            {"TG", OperationG},
-            {"TH", OperationH},
-            {"TI", OperationI},
-            {"TJ", OperationJ},
-            {"TK", OperationK},
-            {"TL", OperationL},
-            {"TM", OperationM},
+            {"TA",       OperationA},
+            {"TB",       OperationB},
+            {"TC",       OperationC},
+            {"TD",       OperationD},
+            {"TE",       OperationE},
+            {"TF",       OperationF},
+            {"TG",       OperationG},
+            {"TH",       OperationH},
+            {"TI",       OperationI},
+            {"TJ",       OperationJ},
+            {"TK",       OperationK},
+            {"TL",       OperationL},
+            {"TM",       OperationM},
+            {"RANDTIME", RandTime},
+            {"RANDAIR",  RandAir},
+            {"GUI",      StartInteractive}
     };
     RegisterWords(wordEntry, sizeof(wordEntry) / sizeof(struct WordEntry));
 }

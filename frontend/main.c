@@ -9,6 +9,6 @@ int main(int argc, char **argv) {
     if (argc > 1) {
         return ParseFile(argv[1]);
     } else {
-        return interactive();
+        return interactive(VooSchedule_new());
     }
 }

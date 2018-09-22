@@ -86,6 +86,7 @@ Voo VooList_remove(VooList this, VID vid) {
 
 Voo VooList_find(VooList this, VID vid) {
     return _Foreach(
+            this,
             (Voo (*)(VooList, _Node, void *)) _VooList_findRoutine,
             &vid
     );

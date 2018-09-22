@@ -1,9 +1,12 @@
 #ifndef AIRPORT_CONTROL_INTERACTIVE_ACTIONS_H
 #define AIRPORT_CONTROL_INTERACTIVE_ACTIONS_H
 
+#include "../common/VooSchedule.h"
+
 struct Action {
     char *name;
-    void (*action)();
+
+    void (*action)(VooSchedule);
 };
 
 extern struct Action actions[];
