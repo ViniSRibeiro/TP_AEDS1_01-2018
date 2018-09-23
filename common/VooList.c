@@ -7,7 +7,6 @@ typedef struct _Node {
 
 struct __VooList {
     _Node first;
-    _Node last;
     uint32_t length;
 };
 
@@ -26,15 +25,12 @@ static Voo _Foreach(VooList this, Voo (*func)(VooList, _Node, void *), void *dat
     return r;
 }
 
-static Voo _VooList_removeRoutine(VooList list, _Node node, VID *_id) {
+static Voo _VooList_removeRoutine(__attribute__((unused)) VooList list, _Node node, VID *_id) {
     VID id = *_id;
     _Node next = node->next;
     if (next && VID_COMPARE(Voo_getVid(next->data), id)) {
         node->next = next->next;
         Voo v = next->data;
-        if (next == list->last) {
-            list->last = node;
-        }
         free(next);
         return v;
     }
@@ -52,7 +48,7 @@ static Voo _VooList_findRoutine(_Node node, VID *_id) {
 
 VooList VooList_new() {
     VooList instance = malloc(sizeof(struct __VooList));
-    instance->first = instance->last = _AllocateNode(NULL);
+    instance->first = _AllocateNode(NULL);
     instance->length = 0;
     return instance;
 }
@@ -70,7 +66,9 @@ void VooList_insert(VooList this, Voo voo) {
                 continue;
             }
         }
-        (f->next = _AllocateNode(voo))->next = f->next;
+        _Node newNode = _AllocateNode(voo);
+        newNode->next = f->next;
+        f->next = newNode;
         break;
     }
     this->length++;
