@@ -44,7 +44,7 @@ static Time readTime(int line, bool optional) {
                 time[--index] = 0;
             }
         } else if ('0' <= c && c <= '9' && index < 4) {
-            int d = c - '0';
+            uint8_t d = (uint8_t) (c - '0');
 #define C(x, y) if(index == (x) && (y)) continue;
             C(0, d > 2);
             C(1, time[0] == 2 && d > 3);
@@ -58,7 +58,7 @@ static Time readTime(int line, bool optional) {
 static DString readText(int line, int min, int max, uint8_t textType) {
     RAW();
     char *buffer = malloc(sizeof(char) * max + 1);
-    memset(buffer, 0, max + 1);
+    memset(buffer, 0, max + 1UL);
     int index = 0;
     color(A_BOLD, F_WHITE, B_MAGENTA);
     pos(2, line);
@@ -66,7 +66,7 @@ static DString readText(int line, int min, int max, uint8_t textType) {
     while (true) {
         pos(2 + index, line);
 
-        char c = readCh();
+        char c = (char) readCh();
         if (c == '\r') {
             if (index >= min) {
                 buffer[index] = 0;
@@ -121,16 +121,6 @@ static void LogVoo(Voo v) {
     Voo_print(v);
 }
 
-static void PRINT3(__attribute__((unused)) VooSchedule nothing) {
-    PRINTLN("TEST STR");
-    PRINTLN("TEST STR");
-    PRINTLN("TEST STR");
-    PRINTLN("TEST STR");
-    DString s = readText(6, 4, 30, READ_TEXT);
-    PF("\nTyped %s\n", DString_raw(s));
-    readTime(8, true);
-}
-
 static void InsertVoo(VooSchedule schedule) {
     uint8_t lineN = 2;
 
@@ -172,7 +162,7 @@ static void RemoveVoo(VooSchedule schedule) {
     printText(2, "ID do voo");
     DString id = readText(3, 8, 8, READ_TEXT | READ_NUMBER | READ_TEXT_UPPER);
     Voo voo = VooSchedule_remove(schedule, (VID) {
-            .bits = (uint32_t) strtol(DString_raw(id), NULL, 16)
+            .bits = (uint32_t) strtoul(DString_raw(id), NULL, 16)
     });
     if (voo) {
         PF("\nO voo %s foi removido\n", DString_raw(id));
@@ -187,13 +177,16 @@ static void ProcuraVoo(VooSchedule schedule) {
     printText(2, "ID do voo");
     DString id = readText(3, 8, 8, READ_TEXT | READ_NUMBER | READ_TEXT_UPPER);
     Voo voo = VooSchedule_find(schedule, (VID) {
-            .bits = (uint32_t) strtol(DString_raw(id), NULL, 16)
+            .bits = (uint32_t) strtoul(DString_raw(id), NULL, 16)
     });
+    pos(0, 5);
+    DEFAULT_COLOR();
     if (voo) {
         Voo_print(voo);
     } else {
         P("\nVoo nao encontrado");
     }
+    DEFAULT_COLOR_RUNNING();
     DString_delete(id);
 }
 
