@@ -66,7 +66,7 @@ int ParseFile(char *fileName) {
     char *buffer;
     {
         FILE *f;
-        if ((f = fopen(fileName, "r")) == NULL) {
+        if ((f = fopen(fileName, "rb")) == NULL) {
             ERRORLN("Could not open %s for reading", fileName);
             return 1;
         }
@@ -94,17 +94,19 @@ int ParseFile(char *fileName) {
     unsigned long start = 0;
     unsigned long pos = 0;
 
-    char c = UPPER(buffer[0]);
+    char c = buffer[0];
     do {
         if (state == NEW_LINE) {
             if (c != '\n' && c != '\r' && c != ' ') {
                 char cNext = buffer[pos + 1];
-                state = ('a' <= c && c <= 'm' && (cNext == ' ' || cNext == '\n' || cNext == '\r')) ? CUSTOM : NORMAL;
+                state = (
+                        (('a' <= c && c <= 'm') || ('A' <= c && c <= 'M'))
+                        && (cNext == ' ' || cNext == '\n' || cNext == '\r')) ? CUSTOM : NORMAL;
                 start = pos;
             } else {
                 DString_appendChar(output, c);
             }
-        } else if (c == '\n') {
+        } else if (c == '\n' || c == '\r') {
             char tmp = buffer[pos];
             buffer[pos] = 0;
             if (state == NORMAL) {
@@ -116,13 +118,13 @@ int ParseFile(char *fileName) {
                 DString customLine = DString_substr(line, buffer[start + 1] == ' ' ? 2 : 1, -1);
                 DString_appendChar(customLine, ' ');
                 DString_appendChar(customLine, 'T');
-                DString_appendChar(customLine, DString_raw(line)[0]);
+                DString_appendChar(customLine, UPPER(DString_raw(line)[0]));
                 DString_delete(line);
                 customLine = ReplaceHour(customLine);
                 DString_append(output, customLine);
                 DString_delete(customLine);
             }
-            DString_appendChar(output, '\n');
+            DString_appendChar(output, tmp);
             buffer[pos] = tmp;
             state = NEW_LINE;
         }
