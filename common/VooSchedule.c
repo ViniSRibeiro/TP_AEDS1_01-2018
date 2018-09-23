@@ -46,7 +46,7 @@ Voo VooSchedule_find(VooSchedule this, VID vid) {
     ITERATE(this,
             VooList item = VooScheduleItem_getList(it);
                     Voo v;
-                    if ((v = VooList_remove(item, vid)) != NULL) {
+                    if ((v = VooList_find(item, vid)) != NULL) {
                         return v;
                     }
     );
