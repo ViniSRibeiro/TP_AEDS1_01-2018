@@ -31,8 +31,17 @@ static void OperationA(__attribute__((unused)) ProgramStack stack) {
 }
 
 static void OperationB(ProgramStack stack) {
-    DString runwayStr, landingAir, takeOffAir, landingTimeStr, takeOffTimeStr;
-    POP_STRING(runwayStr, stack);
+    DString landingAir, takeOffAir, landingTimeStr, takeOffTimeStr;
+
+    int8_t runway;
+    struct PElement runwayElement = PStack_pop(stack);
+    if(runwayElement.type == DATATYPE_STRING) {
+        runway = (int8_t) strtol(DString_raw(runwayElement.data.string), NULL, 10);
+        DString_delete(runwayElement.data.string);
+    } else {
+        runway = (int8_t) runwayElement.data.number;
+    }
+
     POP_STRING(landingAir, stack);
     POP_STRING(takeOffAir, stack);
     POP_STRING(landingTimeStr, stack);
@@ -48,16 +57,15 @@ static void OperationB(ProgramStack stack) {
                     FlightData_new(
                             takeOffTime,
                             Aeroporto_get(DString_raw(takeOffAir)),
-                            (int8_t) strtol(DString_raw(runwayStr), NULL, 10)
+                            -1
                     ),
                     FlightData_new(
                             landingTime,
                             Aeroporto_get(DString_raw(landingAir)),
-                            -1
+                            runway
                     )
             )
     );
-    DString_delete(runwayStr);
     DString_delete(takeOffAir);
     DString_delete(landingAir);
 }
@@ -70,10 +78,7 @@ static void OperationC(ProgramStack stack) {
             .bits = (uint32_t) strtol(DString_raw(id), NULL, 16)
     });
     if (v) {
-        PRINTLN("O voo foi removido");
         Voo_print(v);
-    } else {
-        PRINTLN("Voo nao encontrado");
     }
 }
 
@@ -85,11 +90,7 @@ static void OperationD(ProgramStack stack) {
             .bits = (uint32_t) strtol(DString_raw(id), NULL, 16)
     });
     DString_delete(id);
-    if (v) {
-        Voo_print(v);
-    } else {
-        PRINTLN("Voo nao encontrado");
-    }
+    Voo_print(v);
 }
 
 
@@ -134,8 +135,8 @@ static void OperationH(__attribute__((unused)) ProgramStack stack) {
 static void OperationI(__attribute__((unused)) ProgramStack stack) {
     struct VooSchedule_SearchResult result = VooSchedule_findPeakTime(item);
     PRINTLN("Intervalo de pico:"
-            "\n> Decolagem %02d:00"
-            "\n> Pouso %02d:00"
+            "\n> Decolagem %02dH"
+            "\n> Pouso %02dH"
             "\n> Numero de voos: %d",
             result.takeOff, result.landing,
             VooScheduleItem_num(result.list)
@@ -146,8 +147,8 @@ static void OperationI(__attribute__((unused)) ProgramStack stack) {
 static void OperationJ(__attribute__((unused)) ProgramStack stack) {
     struct VooSchedule_SearchResult result = VooSchedule_findOffPeakTime(item);
     PRINTLN("Intervalo menos movimentado:"
-            "\n> Decolagem %02d:00"
-            "\n> Pouso %02d:00"
+            "\n> Decolagem %02dH"
+            "\n> Pouso %02dH"
             "\n> Numero de voos: %d",
             result.takeOff, result.landing,
             VooScheduleItem_num(result.list)
@@ -159,8 +160,8 @@ static void OperationK(__attribute__((unused)) ProgramStack stack) {
     struct VooSchedule_SearchResult result = VooSchedule_findMostRecentUpdated(item);
     Time t = VooScheduleItem_getLastUpdate(result.list);
     PRINTLN("Ultima lista alterada:"
-            "\n> Decolagem %02d:00"
-            "\n> Pouso %02d:00"
+            "\n> Decolagem %02dH"
+            "\n> Pouso %02dH"
             "\n> Horario: %02d:%02d",
             result.takeOff, result.landing,
             Time_getHour(t), Time_getMinute(t)
@@ -172,8 +173,8 @@ static void OperationL(__attribute__((unused)) ProgramStack stack) {
     struct VooSchedule_SearchResult result = VooSchedule_findLessRecentUpdated(item);
     Time t = VooScheduleItem_getLastUpdate(result.list);
     PRINTLN("Lista a mais tempo sem alterar:"
-            "\n> Decolagem %02d:00"
-            "\n> Pouso %02d:00"
+            "\n> Decolagem %02dH"
+            "\n> Pouso %02dH"
             "\n> Horario: %02d:%02d",
             result.takeOff, result.landing,
             Time_getHour(t), Time_getMinute(t)
