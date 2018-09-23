@@ -205,7 +205,7 @@ static void RandAir(ProgramStack stack) {
 }
 
 static void StartInteractive(__attribute__((unused)) ProgramStack stack) {
-    interactive(item);
+    Interactive(item);
 }
 
 static void RandNum(ProgramStack stack) {
