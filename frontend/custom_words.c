@@ -203,8 +203,14 @@ static void RandAir(ProgramStack stack) {
     PStack_push(stack, STACK_STR(DString_new(air)));
 }
 
-static void StartInteractive(ProgramStack stack) {
+static void StartInteractive(__attribute__((unused)) ProgramStack stack) {
     interactive(item);
+}
+
+static void RandNum(ProgramStack stack) {
+    number_t max;
+    POP_NUMBER(max, stack);
+    PStack_push(stack, STACK_NUMBER(rand() % ((uint64_t) max))); // NOLINT(cert-msc30-c,cert-msc50-cpp)
 }
 
 void RegisterAirportWords() {
@@ -224,6 +230,7 @@ void RegisterAirportWords() {
             {"TM",       OperationM},
             {"RANDTIME", RandTime},
             {"RANDAIR",  RandAir},
+            {"RANDNUM",  RandNum},
             {"GUI",      StartInteractive}
     };
     RegisterWords(wordEntry, sizeof(wordEntry) / sizeof(struct WordEntry));
