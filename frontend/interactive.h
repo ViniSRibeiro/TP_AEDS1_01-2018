@@ -3,6 +3,6 @@
 
 #include "../common/VooSchedule.h"
 
-int interactive(VooSchedule);
+void Interactive(VooSchedule);
 
 #endif //AIRPORT_CONTROL_INTERACTIVE_H

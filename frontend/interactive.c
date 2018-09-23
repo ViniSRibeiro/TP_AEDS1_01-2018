@@ -82,7 +82,6 @@ int input() {
 	return first == 0 || first == 0xE0 ? _getch() : first;
 #else
     int c = getchar();
-    PF("\n%d", c);
     if (c == 4 || c == 3) {
         UNRAW();
         DEFAULT_COLOR_RUNNING();
@@ -93,7 +92,7 @@ int input() {
 #endif
 }
 
-int interactive(VooSchedule schedule) {
+void Interactive(VooSchedule schedule) {
 
 #ifdef _WIN32
 	hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
