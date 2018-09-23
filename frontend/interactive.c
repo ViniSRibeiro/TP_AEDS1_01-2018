@@ -5,7 +5,7 @@
 
 #include "terminal.h"
 
-int cols, rows, centerX, centerY, selected = 0;
+int centerX, centerY, selected = 0;
 int nOfActions;
 int maxLength = 0;
 int halfY, halfX;
@@ -76,15 +76,23 @@ void downArrow() {
 	}
 }
 
+int input() {
+#ifdef _WIN32
+	int first = _getch();
+	return first == 0 || first == 0xE0 ? _getch() : first;
+#else
+	return getchar();
+#endif
+}
+
 int interactive(VooSchedule schedule) {
 
 #ifdef _WIN32
 	hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
-    readCh = _getch;
 #else
-    readCh = getchar;
     RAW();
 #endif
+	readCh = input;
 
     nOfActions = numOfActions();
 
@@ -96,14 +104,11 @@ int interactive(VooSchedule schedule) {
         }
         switch (c) {
 #ifdef _WIN32
-			case 224: {
-				c = readCh();
-				if(c == 72) {
-					upArrow();
-				} else if(c == 80) {
-					downArrow();
-				}
-			};
+			case 72:
+				upArrow();
+				break;
+			case 80:
+				downArrow();
 				break;
 #else
             case '\033': {
@@ -126,11 +131,7 @@ int interactive(VooSchedule schedule) {
                 UNRAW();
                 actions[selected].action(schedule);
                 RAW();
-#ifndef _WIN32
-                readCh();
-#else
-                getchar();
-#endif
+				readCh();
             }
 				break;
 			default:

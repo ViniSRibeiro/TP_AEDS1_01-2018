@@ -5,6 +5,7 @@
 #include "terminal.h"
 
 int (*readCh)() = NULL;
+int cols, rows;
 
 void color(enum Attributes attr, enum FColors fore, enum BColors back) {
 #ifdef _WIN32

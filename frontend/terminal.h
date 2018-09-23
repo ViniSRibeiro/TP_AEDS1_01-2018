@@ -24,6 +24,7 @@
 #define PF(x, ...) printf(x, ##__VA_ARGS__)
 
 extern int (*readCh)();
+extern int cols, rows;
 
 #ifdef _WIN32
 
