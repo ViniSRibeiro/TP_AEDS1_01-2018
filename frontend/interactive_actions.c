@@ -164,6 +164,7 @@ static void RemoveVoo(VooSchedule schedule) {
     Voo voo = VooSchedule_remove(schedule, (VID) {
             .bits = (uint32_t) strtoul(DString_raw(id), NULL, 16)
     });
+    pos(0, 5);
     if (voo) {
         PF("\nO voo %s foi removido\n", DString_raw(id));
         Voo_print(voo);
@@ -180,13 +181,11 @@ static void ProcuraVoo(VooSchedule schedule) {
             .bits = (uint32_t) strtoul(DString_raw(id), NULL, 16)
     });
     pos(0, 5);
-    DEFAULT_COLOR();
     if (voo) {
         Voo_print(voo);
     } else {
         P("\nVoo nao encontrado");
     }
-    DEFAULT_COLOR_RUNNING();
     DString_delete(id);
 }
 
@@ -197,13 +196,21 @@ static void ListVoo(VooSchedule schedule) {
     Time takeOffTime = readTime(N, true);
     printText(N, "Horario de pouso (opcional)");
     Time landingTime = readTime(N, true);
-
+    DEFAULT_COLOR();
+    pos(1, 1);
+    P("Nenhum voo neste horario");
+    DEFAULT_COLOR_RUNNING();
     logCounter = 0;
     VooSchedule_forEach(schedule, takeOffTime, landingTime, LogVoo);
 }
 
 static void PeakTime(VooSchedule schedule) {
     struct VooSchedule_SearchResult result = VooSchedule_findPeakTime(schedule);
+    if (!VooScheduleItem_num(result.list)) {
+        pos(1, 1);
+        P("Nenhum voo cadastrado");
+        return;
+    }
     PF("Intervalo de pico:"
        "\n> Decolagem %02dH"
        "\n> Pouso %02dH"
@@ -216,6 +223,11 @@ static void PeakTime(VooSchedule schedule) {
 
 static void OffPeakTime(VooSchedule schedule) {
     struct VooSchedule_SearchResult result = VooSchedule_findOffPeakTime(schedule);
+    if (!VooScheduleItem_num(result.list)) {
+        pos(1, 1);
+        P("Nenhum voo cadastrado");
+        return;
+    }
     PF("Intervalo menos movimentado:"
        "\n> Decolagem %02dH"
        "\n> Pouso %02dH"
@@ -229,6 +241,11 @@ static void OffPeakTime(VooSchedule schedule) {
 static void MostRecentUpdated(VooSchedule schedule) {
     struct VooSchedule_SearchResult result = VooSchedule_findMostRecentUpdated(schedule);
     Time t = VooScheduleItem_getLastUpdate(result.list);
+    if (!VooScheduleItem_num(result.list)) {
+        pos(1, 1);
+        P("Nenhum voo cadastrado");
+        return;
+    }
     PF("Ultima lista alterada:"
        "\n> Decolagem %02dH"
        "\n> Pouso %02dH"
@@ -242,6 +259,11 @@ static void MostRecentUpdated(VooSchedule schedule) {
 static void LessMostRecentUpdated(VooSchedule schedule) {
     struct VooSchedule_SearchResult result = VooSchedule_findLessRecentUpdated(schedule);
     Time t = VooScheduleItem_getLastUpdate(result.list);
+    if (!VooScheduleItem_num(result.list)) {
+        pos(1, 1);
+        P("Nenhum voo cadastrado");
+        return;
+    }
     PF("Lista a mais tempo sem alterar:"
        "\n> Decolagem %02dH"
        "\n> Pouso %02dH"
@@ -262,11 +284,11 @@ static void Sparse(VooSchedule schedule) {
 FILE *saving;
 
 static void SaveIterator(Voo voo) {
-    FlightData takeOff = Voo_getTakeoff(voo);
-    Time takeOffTime = FlightData_getSchedule(takeOff);
+    FlightData takeOff     = Voo_getTakeoff(voo);
+    Time       takeOffTime = FlightData_getSchedule(takeOff);
 
-    FlightData landing = Voo_getLanding(voo);
-    Time landingTime = FlightData_getSchedule(landing);
+    FlightData landing     = Voo_getLanding(voo);
+    Time       landingTime = FlightData_getSchedule(landing);
 
     fprintf(
             saving,
