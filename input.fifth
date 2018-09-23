@@ -10,8 +10,10 @@ a
     b 15:30 16:20 LEC CNF 2
 ;
 :de dup println ;
+// insert
 :rand
-    RANDTIME RANDTIME RANDAIR RANDAIR "3" TB
+    RANDTIME RANDTIME RANDAIR RANDAIR 10 RANDNUM TB
+    de
     dup
     0 <
     if
@@ -19,6 +21,7 @@ a
         rand
     then
 ;
+//TH
 50 rand
 // insert
 gui
