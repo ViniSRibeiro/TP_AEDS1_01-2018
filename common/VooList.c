@@ -37,7 +37,7 @@ static Voo _VooList_removeRoutine(__attribute__((unused)) VooList list, _Node no
     return NULL;
 }
 
-static Voo _VooList_findRoutine(_Node node, VID *_id) {
+static Voo _VooList_findRoutine(__attribute__((unused)) VooList list, _Node node, VID *_id) {
     VID id = *_id;
     _Node next = node->next;
     if (next && VID_COMPARE(Voo_getVid(next->data), id)) {
@@ -83,11 +83,11 @@ Voo VooList_remove(VooList this, VID vid) {
 }
 
 Voo VooList_find(VooList this, VID vid) {
-    return _Foreach(
-            this,
-            (Voo (*)(VooList, _Node, void *)) _VooList_findRoutine,
-            &vid
-    );
+    Voo        r = NULL;
+    for (_Node f = this->first; f != NULL && r == NULL; f = f->next) {
+        r = _VooList_findRoutine(this, f, &vid);
+    }
+    return r;
 }
 
 void VooList_forEach(VooList this, void (*target)(Voo)) {

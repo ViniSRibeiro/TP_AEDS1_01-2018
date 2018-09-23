@@ -90,7 +90,9 @@ static void OperationD(ProgramStack stack) {
             .bits = (uint32_t) strtol(DString_raw(id), NULL, 16)
     });
     DString_delete(id);
-    Voo_print(v);
+    if(v) {
+        Voo_print(v);
+    }
 }
 
 

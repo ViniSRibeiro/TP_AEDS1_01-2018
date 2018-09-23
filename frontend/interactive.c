@@ -5,10 +5,10 @@
 
 #include "terminal.h"
 
-int centerX, centerY, selected = 0;
-int nOfActions;
-int maxLength = 0;
-int halfY, halfX;
+unsigned int centerX, centerY, selected = 0;
+unsigned int nOfActions;
+unsigned int maxLength = 0;
+unsigned int halfY, halfX;
 
 void drawActions() {
 
@@ -65,15 +65,15 @@ void drawActions() {
 }
 
 void upArrow() {
-	if (selected > 0) {
-		selected--;
-	}
+    if(selected > 0) {
+        selected--;
+    } else {
+        selected = nOfActions - 1;
+    }
 }
 
 void downArrow() {
-	if (selected < nOfActions - 1) {
-		selected++;
-	}
+    selected = (selected + 1) % nOfActions;
 }
 
 int input() {
