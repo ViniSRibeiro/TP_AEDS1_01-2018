@@ -1,5 +1,6 @@
 #include "interactive_actions.h"
 #include <stdio.h>
+#include <memory.h>
 #include "terminal.h"
 #include "../FIFTH/src/dynamic_string.h"
 
@@ -9,9 +10,9 @@
 #define BACKSPACE ((char) 127)
 #endif
 
-#define READ_TEXT 1
-#define READ_NUMBER (1 << 1)
-#define READ_TEXT_UPPER (1 << 2)
+#define READ_TEXT 1u
+#define READ_NUMBER (1u << 1u)
+#define READ_TEXT_UPPER (1u << 2u)
 #define N lineN++
 
 static Time readTime(int line, bool optional) {
@@ -53,7 +54,7 @@ static Time readTime(int line, bool optional) {
 	}
 }
 
-static DString readText(int line, int min, int max, int textType) {
+static DString readText(int line, int min, int max, uint8_t textType) {
 	RAW();
 	char *buffer = malloc(sizeof(char) * max + 1);
 	memset(buffer, 0, max + 1);
@@ -80,7 +81,7 @@ static DString readText(int line, int min, int max, int textType) {
 			buffer[index--] = 0;
 		} else if(index < max) {
 			bool ok = false;
-			if(textType & READ_TEXT && ('a' <= c && c <= 'z' || 'A' <= c && c <= 'Z')) {
+            if (textType & READ_TEXT && (('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z'))) {
 				if(textType & READ_TEXT_UPPER) {
 					c = UPPER(c);
 				}
@@ -101,7 +102,7 @@ static void printText(int line, char* text) {
 	P(text);
 }
 
-static void PRINT3(VooSchedule nothing) {
+static void PRINT3(__attribute__((unused)) VooSchedule nothing) {
     PRINTLN("TEST STR");
     PRINTLN("TEST STR");
     PRINTLN("TEST STR");
@@ -145,7 +146,7 @@ static void InsertVoo(VooSchedule schedule) {
 	DString_delete(landingAir);
 	DString_delete(takeOffAir);
 
-	PF("\n\nVoo criado com o id %08X", Voo_getVid(voo));
+    PF("\n\nVoo criado com o id %08X", Voo_getVid(voo).bits);
 }
 
 static void RemoveVoo(VooSchedule schedule) {
@@ -155,7 +156,7 @@ static void RemoveVoo(VooSchedule schedule) {
 		.bits = (uint32_t) strtol(DString_raw(id), NULL, 16)
 	});
 	if (voo) {
-		PF("\nO voo %s foi removido\n", id);
+        PF("\nO voo %s foi removido\n", DString_raw(id));
 		Voo_print(voo);
 	}
 	else {
