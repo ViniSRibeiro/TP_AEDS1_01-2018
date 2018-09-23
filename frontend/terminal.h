@@ -102,8 +102,8 @@ enum BColors {
 #define UNRAW() (void)0
 #else
 #define CLEAR() ESC("2J")
-#define RAW() system("/bin/stty raw")
-#define UNRAW() system("/bin/stty -raw")
+#define RAW() system("/bin/stty raw -echo")
+#define UNRAW() system("/bin/stty -raw echo")
 #endif
 #define DEFAULT_COLOR() color(A_BOLD, F_WHITE, B_YELLOW)
 #define DEFAULT_COLOR_SELECTED() color(A_BOLD, F_WHITE, B_MAGENTA)

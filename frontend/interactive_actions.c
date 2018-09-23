@@ -3,12 +3,19 @@
 #include "terminal.h"
 #include "../FIFTH/src/dynamic_string.h"
 
+#ifdef _WIN32
+#define BACKSPACE '\b'
+#else
+#define BACKSPACE ((char) 127)
+#endif
+
 #define READ_TEXT 1
 #define READ_NUMBER (1 << 1)
 #define READ_TEXT_UPPER (1 << 2)
 #define N lineN++
 
 static Time readTime(int line, bool optional) {
+	RAW();
 	uint8_t time[4] = {0, 0, 0, 0};
 	int index = 0;
 
@@ -27,9 +34,10 @@ static Time readTime(int line, bool optional) {
 			Time t = index == 4 ? Time_new(time[0] * 10 + time[1], time[2] * 10 + time[3]) : NULL;
 			if (index == 4 || (optional && index == 0)) {
 				DEFAULT_COLOR_RUNNING();
+				UNRAW();
 				return t;
 			}
-		} else if(c == '\b') {
+		} else if (c == BACKSPACE) {
 			if (index > 0) {
 				time[--index] = 0;
 			}
@@ -46,6 +54,7 @@ static Time readTime(int line, bool optional) {
 }
 
 static DString readText(int line, int min, int max, int textType) {
+	RAW();
 	char *buffer = malloc(sizeof(char) * max + 1);
 	memset(buffer, 0, max + 1);
 	int index = 0;
@@ -62,9 +71,10 @@ static DString readText(int line, int min, int max, int textType) {
 				DString d = DString_new(buffer);
 				free(buffer);
 				DEFAULT_COLOR_RUNNING();
+				UNRAW();
 				return d;
 			}
-		} else if(c == '\b' && index > 0) {
+		} else if (c == BACKSPACE && index > 0) {
 			pos(1 + index, line);
 			PC(' ');
 			buffer[index--] = 0;

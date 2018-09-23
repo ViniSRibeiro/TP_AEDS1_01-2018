@@ -81,7 +81,15 @@ int input() {
 	int first = _getch();
 	return first == 0 || first == 0xE0 ? _getch() : first;
 #else
-	return getchar();
+    int c = getchar();
+    PF("\n%d", c);
+    if (c == 4 || c == 3) {
+        UNRAW();
+        DEFAULT_COLOR_RUNNING();
+        CLEAR();
+        exit(0);
+    }
+    return c;
 #endif
 }
 
@@ -98,10 +106,6 @@ int interactive(VooSchedule schedule) {
 
     while (drawActions(), 1) {
         int c = readCh();
-        if (c == 4 || c == 3) {
-            RAW();
-            return 0;
-        }
         switch (c) {
 #ifdef _WIN32
 			case 72:
