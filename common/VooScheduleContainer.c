@@ -45,31 +45,21 @@ void VSContainer_insert(VSContainer this, VooSchedule schedule) {
     this->list[this->len++] = schedule;
 }
 
-void VSContainer_sort(VSContainer this, enum VSContainer_SortType type, VSContainer_Comparator comparator) {
+struct VSContainer_SortStats VSContainer_sort(VSContainer this, enum VSContainer_SortType type, VSContainer_Comparator comparator) {
     switch(type) {
         case VSCONTAINER_BUBBLE:
-            sort_bubbleSort(this->list, this->len, comparator);
-            break;
+            return sort_bubbleSort(this->list, this->len, comparator);
         case VSCONTAINER_SELECTION:
-            sort_selectionSort(this->list, this->len, comparator);
-            break;
+            return sort_selectionSort(this->list, this->len, comparator);
         case VSCONTAINER_INSERTION:
-            sort_insertionSort(this->list, this->len, comparator);
-            break;
+            return sort_insertionSort(this->list, this->len, comparator);
         case VSCONTAINER_SHELL:
-            sort_shellSort(this->list, this->len, comparator);
-            break;
+            return sort_shellSort(this->list, this->len, comparator);
         case VSCONTAINER_QUICK:
-            sort_bubbleSort(this->list, this->len, comparator); // TODO Replace bubble to quick
-            break;
+            return sort_bubbleSort(this->list, this->len, comparator); // TODO Replace bubble to quick
         case VSCONTAINER_HEAP:
-            sort_bubbleSort(this->list, this->len, comparator); // TODO Replace bubble to heap
-            break;
+            return sort_bubbleSort(this->list, this->len, comparator); // TODO Replace bubble to heap
     }
-}
-
-struct VSContainer_SortStats VSContainer_getStats(VSContainer this) {
-    return this->stats;
 }
 
 struct VSContainer_SortStats sort_bubbleSort
