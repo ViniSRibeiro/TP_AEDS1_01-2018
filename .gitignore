@@ -2,3 +2,7 @@
 # CMake build folders
 cmake-build*/
 build/
+
+.idea/
+
+arquivosentradaTP3/
