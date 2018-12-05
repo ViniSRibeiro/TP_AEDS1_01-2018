@@ -51,14 +51,12 @@ void VSContainer_sort(VSContainer this, VSContainer_SortType, VSContainer_Compar
 
 void sort_bubbleSort
     (VooSchedule *list, int length, VSContainer_Comparator comparator) {
-    int i, j, temp;
-
-    for (i = 0; i < length - 1; i++){
-        for (j = (i+1); j < length; j++){
-            if (vet[j] < vet[i]){
-                temp = vet[i];
-                vet[i] = vet[j];
-                vet[j] = temp;
+    for (int i = 0; i < length - 1; i++){
+        for (int j = (i+1); j < length; j++){
+            if (comparator(list[j], list[i]) < 0){
+                VooSchedule temp = list[i];
+                list[i] = list[j];
+                list[j] = temp;
             }
         }
     }
