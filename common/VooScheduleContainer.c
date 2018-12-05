@@ -59,6 +59,8 @@ struct VSContainer_SortStats VSContainer_sort(VSContainer this, enum VSContainer
             return sort_bubbleSort(this->list, this->len, comparator); // TODO Replace bubble to quick
         case VSCONTAINER_HEAP:
             return sort_bubbleSort(this->list, this->len, comparator); // TODO Replace bubble to heap
+        default:
+            FATAL("Runtime exception: Invalid sort type");
     }
 }
 
