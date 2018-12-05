@@ -31,7 +31,7 @@ VSContainer VSContainer_new();
 
 void VSContainer_insert(VSContainer, VooSchedule);
 
-void VSContainer_sort(VSContainer, VSContainer_SortType, VSContainer_Comparator);
+void VSContainer_sort(VSContainer, enum VSContainer_SortType, VSContainer_Comparator);
 
 struct VSContainer_SortStats VSContainer_getStats(VSContainer);
 

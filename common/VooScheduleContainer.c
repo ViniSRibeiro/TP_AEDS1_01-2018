@@ -5,13 +5,13 @@
 #include "VooScheduleContainer.h"
 
 
-static void sort_bubbleSort
+static struct VSContainer_SortStats sort_bubbleSort
     (VooSchedule *list, int length, VSContainer_Comparator comparator);
-static void sort_selectionSort
+static struct VSContainer_SortStats sort_selectionSort
     (VooSchedule *list, int length, VSContainer_Comparator comparator);
-static void sort_insertionSort
+static struct VSContainer_SortStats sort_insertionSort
     (VooSchedule *list, int length, VSContainer_Comparator comparator);
-static void sort_shellSort
+static struct VSContainer_SortStats sort_shellSort
     (VooSchedule *list, int length, VSContainer_Comparator comparator);
 
 struct __VSContainer {
@@ -45,11 +45,34 @@ void VSContainer_insert(VSContainer this, VooSchedule schedule) {
     this->list[this->len++] = schedule;
 }
 
-void VSContainer_sort(VSContainer this, VSContainer_SortType, VSContainer_Comparator comparator) {
-
+void VSContainer_sort(VSContainer this, enum VSContainer_SortType type, VSContainer_Comparator comparator) {
+    switch(type) {
+        case VSCONTAINER_BUBBLE:
+            sort_bubbleSort(this->list, this->len, comparator);
+            break;
+        case VSCONTAINER_SELECTION:
+            sort_selectionSort(this->list, this->len, comparator);
+            break;
+        case VSCONTAINER_INSERTION:
+            sort_insertionSort(this->list, this->len, comparator);
+            break;
+        case VSCONTAINER_SHELL:
+            sort_shellSort(this->list, this->len, comparator);
+            break;
+        case VSCONTAINER_QUICK:
+            sort_bubbleSort(this->list, this->len, comparator); // TODO Replace bubble to quick
+            break;
+        case VSCONTAINER_HEAP:
+            sort_bubbleSort(this->list, this->len, comparator); // TODO Replace bubble to heap
+            break;
+    }
 }
 
-void sort_bubbleSort
+struct VSContainer_SortStats VSContainer_getStats(VSContainer this) {
+    return this->stats;
+}
+
+struct VSContainer_SortStats sort_bubbleSort
     (VooSchedule *list, int length, VSContainer_Comparator comparator) {
     for (int i = 0; i < length - 1; i++){
         for (int j = (i+1); j < length; j++){
@@ -62,7 +85,7 @@ void sort_bubbleSort
     }
 }
 
-void sort_selectionSort
+struct VSContainer_SortStats sort_selectionSort
     (VooSchedule *list, int length, VSContainer_Comparator comparator) {i
 
     int i, j, min, aux;
@@ -81,7 +104,7 @@ void sort_selectionSort
     }
 }
 
-void sort_insertionSort
+struct VSContainer_SortStats sort_insertionSort
     (VooSchedule *list, int length, VSContainer_Comparator comparator) {
 
     int escolhido, j;
@@ -99,7 +122,7 @@ void sort_insertionSort
     }
 }
 
-void sort_shellSort
+struct VSContainer_SortStats sort_shellSort
     (VooSchedule *list, int length, VSContainer_Comparator comparator) {
 
     int i , j , value;
