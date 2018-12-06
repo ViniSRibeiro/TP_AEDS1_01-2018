@@ -34,7 +34,7 @@ bool parse(int argc, char **argv) {
 
     VSContainer container;
 
-    if (strcmp(argv[1], "-f") != 0) { // READ FROM FILE
+    if (strcmp(argv[1], "-f") == 0) { // READ FROM FILE
         FILE *f = fopen(argv[2], "r");
         if (!f) {
             ERRORLN("Invalid file name %s", argv[2]);
