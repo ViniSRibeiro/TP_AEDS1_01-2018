@@ -66,16 +66,16 @@ void VSContainer_insert(VSContainer this, VooSchedule schedule) {
 void VSContainer_insertAt(VSContainer this, size_t pos, VooSchedule schedule) {
     validateSize(this, pos + 1);
     this->list[pos] = schedule;
-    if(this->len < pos + 1) {
+    if (this->len < pos + 1) {
         this->len = pos + 1;
     }
 }
 
 void VSContainer_fillEmpty(VSContainer this, size_t length) {
-    if(length < this->len) {
+    if (length < this->len) {
         VSContainer_insertAt(this, --length, VooSchedule_new());
     }
-    for(int i = 0; i < length; ++i) {
+    for (int i = 0; i < length; ++i) {
         VSContainer_insertAt(this, i, VooSchedule_new());
     }
 }
@@ -102,9 +102,17 @@ VSContainer_sort(VSContainer this, enum VSContainer_SortType type, VSContainer_C
 }
 
 VSContainer VSContainer_clone(VSContainer this) {
-    VSContainer new = VSContainer_new(this->len);
+    VSContainer new = VSContainer_new(this->cap);
     memcpy(new->list, this->list, sizeof(void *) * this->len);
+    new->len = this->len;
     return new;
+}
+
+void VSContainer_deleteClone(VSContainer this) {
+    if (this->list != NULL) {
+        free(this->list);
+    }
+    free(this);
 }
 
 void VSContainer_delete(VSContainer this) {
@@ -113,8 +121,7 @@ void VSContainer_delete(VSContainer this) {
             VooSchedule_delete(this->list[i]);
         }
     }
-    free(this->list);
-    free(this);
+    VSContainer_deleteClone(this);
 }
 
 struct VSContainer_SortStats sort_bubbleSort

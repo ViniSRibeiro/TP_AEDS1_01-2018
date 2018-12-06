@@ -38,6 +38,8 @@ struct VSContainer_SortStats VSContainer_sort(VSContainer, enum VSContainer_Sort
 
 VSContainer VSContainer_clone(VSContainer);
 
+void VSContainer_deleteClone(VSContainer);
+
 void VSContainer_delete(VSContainer);
 
 #endif //AIRPORT_CONTROL_SORT_VOOSCHEDULE_H
