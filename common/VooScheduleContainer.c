@@ -72,11 +72,13 @@ void VSContainer_insertAt(VSContainer this, size_t pos, VooSchedule schedule) {
 }
 
 void VSContainer_fillEmpty(VSContainer this, size_t length) {
-    if (length < this->len) {
+    if (this->len < length) {
         VSContainer_insertAt(this, --length, VooSchedule_new());
     }
-    for (int i = 0; i < length; ++i) {
-        VSContainer_insertAt(this, i, VooSchedule_new());
+    for (size_t i = 0; i < length; ++i) {
+        if(this->list[i] == NULL) {
+            VSContainer_insertAt(this, i, VooSchedule_new());
+        }
     }
 }
 
