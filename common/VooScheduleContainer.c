@@ -141,7 +141,7 @@ struct VSContainer_SortStats sort_shellSort
     return (struct VSContainer_SortStats) {};
 }
 
-void Particao(int Esq, int Dir,int *i, int *j, VooSchedule *A,VSContainer_Comparator comparator){
+void sort_QuickSort_Particao(int Esq, int Dir, int *i, int *j, VooSchedule *A, VSContainer_Comparator comparator){
     VooSchedule pivo, aux;
     *i = Esq; *j = Dir;
     pivo = A[(*i + *j)/2];
@@ -157,14 +157,14 @@ void Particao(int Esq, int Dir,int *i, int *j, VooSchedule *A,VSContainer_Compar
     }while(*i <= *j);
 }
 
-void Ordena(int Esq, int Dir, VooSchedule *A) {
+void sort_QuickSort_Ordena(int Esq, int Dir, VooSchedule *A,VSContainer_Comparator comparator) {
     int i, j;
-    Particao(Esq, Dir, &i, &j, A);
-    if (Esq < j)Ordena(Esq, j, A);
-    if (i < Dir)Ordena(i, Dir, A);
+    sort_QuickSort_Particao(Esq, Dir, &i, &j, A,comparator);
+    if (Esq < j)sort_QuickSort_Ordena(Esq, j, A,comparator);
+    if (i < Dir)sort_QuickSort_Ordena(i, Dir, A,comparator);
 }
 
-void QuickSort(VooSchedule *A, int n) {
-    Ordena(0, n - 1, A);
+void sort_QuickSort_main(VooSchedule *A, int n,VSContainer_Comparator comparator) {
+    sort_QuickSort_Ordena(0, n - 1, A,comparator);
 }
 
