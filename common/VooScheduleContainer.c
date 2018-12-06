@@ -103,7 +103,7 @@ struct VSContainer_SortStats sort_bubbleSort
     struct VSContainer_SortStats stats = {0};
     for (int i = 0; i < length - 1; i++) {
         for (int j = (i + 1); j < length; j++) {
-            if (comparator(list[j], list[i]) > 0) {
+            if ((stats.comps++, comparator(list[j], list[i])) >0 ) {
                 VooSchedule temp = list[i];
                 list[i] = list[j];
                 list[j] = temp;
@@ -125,7 +125,7 @@ struct VSContainer_SortStats sort_selectionSort
             if (list[j] < list[min])
                 min = j;
         }
-        if (comparator(list[i], list[min]) != 0) {
+        if ((stats.comps++, comparator(list[i], list[min])) != 0) {
             aux = list[i];
             list[i] = list[min];
             list[min] = aux;
@@ -145,7 +145,7 @@ struct VSContainer_SortStats sort_insertionSort
         escolhido = list[i];
         j = i - 1;
 
-        while ((j >= 0) && comparator(list[j], escolhido) < 0) {
+        while ((j >= 0) && (stats.comps++, comparator(list[j],escolhido)) < 0) {
             list[j + 1] = list[j];
             j--;
         }
@@ -170,7 +170,7 @@ struct VSContainer_SortStats sort_shellSort
         for (i = gap; i < length; i++) {
             value = list[i];
             j = i;
-            while (j >= gap && comparator(value, list[j - gap]) < 0) {
+            while (j >= gap && (stats.comps++, comparator(value, list[j - gap])) < 0) {
                 list[j] = list[j - gap];
                 j = j - gap;
             }
@@ -189,8 +189,8 @@ void sort_QuickSort_Particao(int Esq, int Dir, int *i, int *j, VooSchedule *list
     pivo = list[(*i + *j) / 2];
 
     do {
-        while (comparator(pivo, list[*i]) > 0) (*i)++;
-        while (comparator(pivo, list[*j]) < 0) (*j)--;
+        while (stats->comps++, comparator(pivo, list[*i]) > 0) (*i)++;
+        while (stats->comps++, comparator(pivo, list[*j]) < 0) (*j)--;
         if (*i <= *j) {
             aux = list[*i];
             list[*i] = list[*j];
@@ -241,7 +241,7 @@ struct VSContainer_SortStats sort_HeapSort(VooSchedule *list, int length, VSCont
         while (filho < length) {
             if ((filho + 1 < length) && (list[filho + 1] > list[filho]))
                 filho++;
-            if (comparator(list[filho], t) > 0) {
+            if (stats.comps++, comparator(list[filho], t) > 0) {
                 list[pai] = list[filho];
                 pai = filho;
                 filho = pai * 2 + 1;
