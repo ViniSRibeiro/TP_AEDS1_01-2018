@@ -148,7 +148,20 @@ static int8_t lastLanding(VooSchedule a, VooSchedule b) {
     return (int8_t) Time_compareTo(timeB, timeA);
 }
 
+static int8_t index(VooSchedule a, VooSchedule b) {
+    uint32_t first = VooSchedule_getId(a);
+    uint32_t second = VooSchedule_getId(b);
+    if(first < second) {
+        return -1;
+    }
+    if(first > second) {
+        return 1;
+    }
+    return 0;
+}
+
 struct ComparatorEntry comparators[] = {
+        {"Index compare", index},
         {"First takeoff", firstTakeoff},
         {"Last takeoff",  lastTakeoff},
         {"First landing", firstLanding},
