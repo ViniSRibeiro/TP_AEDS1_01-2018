@@ -2,7 +2,7 @@
 // Created by vinir on 05/12/2018.
 //
 
-#include <windef.h>
+
 #include "VooScheduleContainer.h"
 
 
@@ -141,15 +141,15 @@ struct VSContainer_SortStats sort_shellSort
     return (struct VSContainer_SortStats) {};
 }
 
-void Particao(int Esq, int Dir,int *i, int *j, VooSchedule *A){
+void Particao(int Esq, int Dir,int *i, int *j, VooSchedule *A,VSContainer_Comparator comparator){
     VooSchedule pivo, aux;
     *i = Esq; *j = Dir;
     pivo = A[(*i + *j)/2];
 
     do
     {
-        while(pivo -> Chave > A[*i] -> Chave) (*i)++;
-        while(pivo -> Chave < A[*j] -> Chave) (*j)--;
+        while (comparator(pivo,A[*i])>0) (*i)++;
+        while(comparator(pivo,A[*j])<0) (*j)--;
         if(*i <= *j){
             aux = A[*i]; A[*i] = A[*j]; A[*j] = aux;
             (*i)++; (*j)--;
