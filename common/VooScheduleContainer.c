@@ -66,6 +66,18 @@ void VSContainer_insert(VSContainer this, VooSchedule schedule) {
 void VSContainer_insertAt(VSContainer this, size_t pos, VooSchedule schedule) {
     validateSize(this, pos + 1);
     this->list[pos] = schedule;
+    if(this->len < pos + 1) {
+        this->len = pos + 1;
+    }
+}
+
+void VSContainer_fillEmpty(VSContainer this, size_t length) {
+    if(length < this->len) {
+        VSContainer_insertAt(this, --length, VooSchedule_new());
+    }
+    for(int i = 0; i < length; ++i) {
+        VSContainer_insertAt(this, i, VooSchedule_new());
+    }
 }
 
 struct VSContainer_SortStats

@@ -32,6 +32,8 @@ void VSContainer_insert(VSContainer, VooSchedule);
 
 void VSContainer_insertAt(VSContainer, size_t pos, VooSchedule);
 
+void VSContainer_fillEmpty(VSContainer, size_t length);
+
 struct VSContainer_SortStats VSContainer_sort(VSContainer, enum VSContainer_SortType, VSContainer_Comparator);
 
 VSContainer VSContainer_clone(VSContainer);
