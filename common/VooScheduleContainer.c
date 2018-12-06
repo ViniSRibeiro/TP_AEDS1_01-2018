@@ -198,7 +198,8 @@ struct VSContainer_SortStats sort_quickSort(VooSchedule *list, int length, VSCon
 }
 
 struct VSContainer_SortStats sort_HeapSort(VooSchedule *list, int length, VSContainer_Comparator comparator) {
-    int i = length / 2, pai, filho, t;
+    int i = length / 2, pai, filho;
+    VooSchedule t;
     while (true) {
         if (i > 0) {
             i--;
@@ -214,7 +215,7 @@ struct VSContainer_SortStats sort_HeapSort(VooSchedule *list, int length, VSCont
         while (filho < length) {
             if ((filho + 1 < length) && (list[filho + 1] > list[filho]))
                 filho++;
-            if (list[filho] > t) {
+            if (comparator(list[filho],t)>0) {
                 list[pai] = list[filho];
                 pai   = filho;
                 filho = pai * 2 + 1;
