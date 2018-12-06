@@ -15,7 +15,6 @@ typedef int8_t(*VSContainer_Comparator)(VooSchedule, VooSchedule);
 struct VSContainer_SortStats {
     uint32_t comps;
     uint32_t moves;
-    uint32_t elapsed;
 };
 
 enum VSContainer_SortType {
@@ -35,7 +34,7 @@ void VSContainer_insertAt(VSContainer, size_t pos, VooSchedule);
 
 struct VSContainer_SortStats VSContainer_sort(VSContainer, enum VSContainer_SortType, VSContainer_Comparator);
 
-struct VSContainer_SortStats VSContainer_getStats(VSContainer);
+VSContainer VSContainer_clone(VSContainer);
 
 void VSContainer_delete(VSContainer);
 

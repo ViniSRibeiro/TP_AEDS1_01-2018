@@ -3,6 +3,7 @@
 //
 
 
+#include <memory.h>
 #include "VooScheduleContainer.h"
 
 
@@ -88,6 +89,12 @@ VSContainer_sort(VSContainer this, enum VSContainer_SortType type, VSContainer_C
     }
 }
 
+VSContainer VSContainer_clone(VSContainer this) {
+    VSContainer new = VSContainer_new(this->len);
+    memcpy(new->list, this->list, sizeof(void *) * this->len);
+    return new;
+}
+
 void VSContainer_delete(VSContainer this) {
     for (size_t i = 0; i < this->len; ++i) {
         if (this->list[i] != NULL) {
@@ -101,9 +108,9 @@ void VSContainer_delete(VSContainer this) {
 struct VSContainer_SortStats sort_bubbleSort
         (VooSchedule *list, int length, VSContainer_Comparator comparator) {
     struct VSContainer_SortStats stats = {0};
-    for (int i = 0; i < length - 1; i++) {
+    for (int                     i     = 0; i < length - 1; i++) {
         for (int j = (i + 1); j < length; j++) {
-            if ((stats.comps++, comparator(list[j], list[i])) >0 ) {
+            if ((stats.comps++, comparator(list[j], list[i])) > 0) {
                 VooSchedule temp = list[i];
                 list[i] = list[j];
                 list[j] = temp;
@@ -117,35 +124,35 @@ struct VSContainer_SortStats sort_bubbleSort
 struct VSContainer_SortStats sort_selectionSort
         (VooSchedule *list, int length, VSContainer_Comparator comparator) {
     struct VSContainer_SortStats stats = {0};
-    int j, min;
-    VooSchedule aux;
-    for (int i = 0; i < (length - 1); i++) {
-        min = i;
+    int                          j, min;
+    VooSchedule                  aux;
+    for (int                     i     = 0; i < (length - 1); i++) {
+        min    = i;
         for (j = (i + 1); j < length; j++) {
             if (list[j] < list[min])
                 min = j;
         }
         if ((stats.comps++, comparator(list[i], list[min])) != 0) {
             aux = list[i];
-            list[i] = list[min];
+            list[i]   = list[min];
             list[min] = aux;
             stats.moves++;
         }
     }
-    return (stats) ;
+    return (stats);
 }
 
 struct VSContainer_SortStats sort_insertionSort
         (VooSchedule *list, int length, VSContainer_Comparator comparator) {
     struct VSContainer_SortStats stats = {0};
-    int j;
-    VooSchedule escolhido;
+    int                          j;
+    VooSchedule                  escolhido;
 
     for (int i = 1; i < length; i++) {
         escolhido = list[i];
-        j = i - 1;
+        j         = i - 1;
 
-        while ((j >= 0) && (stats.comps++, comparator(list[j],escolhido)) < 0) {
+        while ((j >= 0) && (stats.comps++, comparator(list[j], escolhido)) < 0) {
             list[j + 1] = list[j];
             j--;
         }
@@ -159,9 +166,9 @@ struct VSContainer_SortStats sort_insertionSort
 struct VSContainer_SortStats sort_shellSort
         (VooSchedule *list, int length, VSContainer_Comparator comparator) {
     struct VSContainer_SortStats stats = {0};
-    int i, j;
-    VooSchedule value;
-    int gap = 1;
+    int                          i, j;
+    VooSchedule                  value;
+    int                          gap   = 1;
     while (gap > length) {
         gap = 3 * gap + 1;
     }
@@ -169,7 +176,7 @@ struct VSContainer_SortStats sort_shellSort
         gap /= 3;
         for (i = gap; i < length; i++) {
             value = list[i];
-            j = i;
+            j     = i;
             while (j >= gap && (stats.comps++, comparator(value, list[j - gap])) < 0) {
                 list[j] = list[j - gap];
                 j = j - gap;
@@ -224,8 +231,8 @@ struct VSContainer_SortStats sort_quickSort(VooSchedule *list, int length, VSCon
 
 struct VSContainer_SortStats sort_HeapSort(VooSchedule *list, int length, VSContainer_Comparator comparator) {
     struct VSContainer_SortStats stats = {0};
-    int i = length / 2, pai, filho;
-    VooSchedule t;
+    int                          i     = length / 2, pai, filho;
+    VooSchedule                  t;
     while (true) {
         if (i > 0) {
             i--;
@@ -236,14 +243,14 @@ struct VSContainer_SortStats sort_HeapSort(VooSchedule *list, int length, VSCont
             t = list[length];
             list[length] = list[0];
         }
-        pai = i;
+        pai   = i;
         filho = i * 2 + 1;
         while (filho < length) {
             if ((filho + 1 < length) && (list[filho + 1] > list[filho]))
                 filho++;
             if (stats.comps++, comparator(list[filho], t) > 0) {
                 list[pai] = list[filho];
-                pai = filho;
+                pai   = filho;
                 filho = pai * 2 + 1;
                 stats.moves++;
             } else {
