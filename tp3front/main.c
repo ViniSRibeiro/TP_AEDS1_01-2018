@@ -59,13 +59,13 @@ int main(int argc, char **argv) {
     if (!parse(argc, argv)) {
         printf(
                 "Usage: %s ...\n\n"
-                "\t\t -f [file] [vector_size] [to_fill] [each_matrix]:\n"
+                "\t\t -f file vector_size to_fill each_matrix:\n"
                 "\t\t\t\tRead file, create vector of length [vector_size], get [to_fill]\n"
                 "\t\t\t\tindexes and fill each index with [each_matrix] flights\n"
                 "\n"
-                "\t\t -r [vector_size] [to_fill] [each_matrix]:\n"
+                "\t\t -r vector_size to_fill each_matrix]:\n"
                 "\t\t\t\tSame as -f but instead of reading file for\n"
-                "\t\t\t\tindexes and flights, fill with random data\n",
+                "\t\t\t\tindexes and flights, fill it with random data\n",
                 argv[0]
         );
     }
