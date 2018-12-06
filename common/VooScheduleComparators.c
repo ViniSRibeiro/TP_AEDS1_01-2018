@@ -5,13 +5,13 @@
 #include "VooScheduleComparators.h"
 
 #define FIRST_TIME(a, b) do {\
-    if(b == NULL || (a != NULL && Time_compareTo(a, b) < 0)) {\
+    if(a != NULL && Time_compareTo(a, b) < 0) {\
         b = a;\
     }\
 } while(0)
 
 #define LAST_TIME(a, b) do {\
-    if(b == NULL || (a != NULL && Time_compareTo(a, b) > 0)) {\
+    if(a != NULL && Time_compareTo(a, b) > 0) {\
         b = a;\
     }\
 } while(0)
@@ -43,50 +43,108 @@ static void lastTimeLanding(Voo voo) {
 
 
 static int8_t firstTakeoff(VooSchedule a, VooSchedule b) {
-    Time         timeA = NULL;
-    Time         timeB = NULL;
-    for (uint8_t x     = 0; x < WIDTH; ++x) {
+    Time timeA = NULL;
+    Time timeB = NULL;
+    
+    for (uint8_t x = 0; x < WIDTH; ++x) {
         for (uint8_t y = 0; y < HEIGHT; ++y) {
             ITERATE_SCHEDULE_ITEM(a, timeA, x, y, FIRST_TIME, firstTimeTakeoff);
-            ITERATE_SCHEDULE_ITEM(b, timeB, x, y, FIRST_TIME, firstTimeTakeoff);
+            if (timeA != NULL) {
+                goto out1;
+            }
         }
     }
+    out1:
+    for (uint8_t x = 0; x < WIDTH; ++x) {
+        for (uint8_t y = 0; y < HEIGHT; ++y) {
+            ITERATE_SCHEDULE_ITEM(b, timeB, x, y, FIRST_TIME, firstTimeTakeoff);
+            if (timeB != NULL) {
+                goto out2;
+            }
+        }
+    }
+    out2:
     return (int8_t) Time_compareTo(timeA, timeB);
 }
 
 static int8_t lastTakeoff(VooSchedule a, VooSchedule b) {
-    Time         timeA = NULL;
-    Time         timeB = NULL;
-    for (uint8_t x     = 0; x < WIDTH; ++x) {
-        for (uint8_t y = 0; y < HEIGHT; ++y) {
+    Time timeA = NULL;
+    Time timeB = NULL;
+
+    for (int x = WIDTH - 1; x >= 0; --x) {
+        for (int y = HEIGHT - 1; y >= 0; --y) {
             ITERATE_SCHEDULE_ITEM(a, timeA, x, y, LAST_TIME, lastTimeTakeoff);
-            ITERATE_SCHEDULE_ITEM(b, timeB, x, y, LAST_TIME, lastTimeTakeoff);
+            if (timeA != NULL) {
+                goto out1;
+            }
         }
     }
+    out1:
+
+    for (int x = WIDTH - 1; x >= 0; --x) {
+        for (int y = HEIGHT - 1; y >= 0; --y) {
+            ITERATE_SCHEDULE_ITEM(b, timeB, x, y, LAST_TIME, lastTimeTakeoff);
+            if (timeB != NULL) {
+                goto out2;
+            }
+        }
+    }
+    out2:
+
     return (int8_t) Time_compareTo(timeB, timeA);
 }
 
 static int8_t firstLanding(VooSchedule a, VooSchedule b) {
-    Time         timeA = NULL;
-    Time         timeB = NULL;
-    for (uint8_t x     = 0; x < WIDTH; ++x) {
-        for (uint8_t y = 0; y < HEIGHT; ++y) {
+    Time timeA = NULL;
+    Time timeB = NULL;
+
+    for (uint8_t y = 0; y < HEIGHT; ++y) {
+        for (uint8_t x = 0; x < WIDTH; ++x) {
             ITERATE_SCHEDULE_ITEM(a, timeA, x, y, FIRST_TIME, firstTimeLanding);
-            ITERATE_SCHEDULE_ITEM(b, timeB, x, y, FIRST_TIME, firstTimeLanding);
+            if (timeA != NULL) {
+                goto out1;
+            }
         }
     }
+    out1:
+
+    for (uint8_t y = 0; y < HEIGHT; ++y) {
+        for (uint8_t x = 0; x < WIDTH; ++x) {
+            ITERATE_SCHEDULE_ITEM(b, timeB, x, y, FIRST_TIME, firstTimeLanding);
+            if (timeB != NULL) {
+                goto out2;
+            }
+        }
+    }
+    out2:
+
     return (int8_t) Time_compareTo(timeA, timeB);
 }
 
 static int8_t lastLanding(VooSchedule a, VooSchedule b) {
-    Time         timeA = NULL;
-    Time         timeB = NULL;
-    for (uint8_t x     = 0; x < WIDTH; ++x) {
-        for (uint8_t y = 0; y < HEIGHT; ++y) {
+    Time timeA = NULL;
+    Time timeB = NULL;
+
+    for (int y = HEIGHT - 1; y >= 0; --y) {
+        for (int x = WIDTH - 1; x >= 0; --x) {
             ITERATE_SCHEDULE_ITEM(a, timeA, x, y, LAST_TIME, lastTimeLanding);
-            ITERATE_SCHEDULE_ITEM(b, timeB, x, y, LAST_TIME, lastTimeLanding);
+            if (timeA != NULL) {
+                goto out1;
+            }
         }
     }
+    out1:
+
+    for (int y = HEIGHT - 1; y >= 0; --y) {
+        for (int x = WIDTH - 1; x >= 0; --x) {
+            ITERATE_SCHEDULE_ITEM(b, timeB, x, y, LAST_TIME, lastTimeLanding);
+            if (timeB != NULL) {
+                goto out2;
+            }
+        }
+    }
+    out2:
+
     return (int8_t) Time_compareTo(timeB, timeA);
 }
 
