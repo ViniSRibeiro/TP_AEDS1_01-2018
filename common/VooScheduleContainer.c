@@ -26,8 +26,8 @@ static struct VSContainer_SortStats sort_HeapSort
 
 struct __VSContainer {
     VooSchedule *list;
-    size_t      len;
-    size_t      cap;
+    size_t len;
+    size_t cap;
 };
 
 VSContainer VSContainer_new(size_t initialSize) {
@@ -41,15 +41,15 @@ VSContainer VSContainer_new(size_t initialSize) {
         instance->cap = initialSize;
     } else {
         instance->list = NULL;
-        instance->len  = 0;
-        instance->cap  = 0;
+        instance->len = 0;
+        instance->cap = 0;
     }
     return instance;
 }
 
 static void validateSize(VSContainer this, size_t size) {
     if (this->cap < size) {
-        this->cap  = (size - this->cap) == 1 ? (this->cap >= 3 ? (int) (this->cap * 1.5f) : this->cap + 1) : size;
+        this->cap = (size - this->cap) == 1 ? (this->cap >= 3 ? (int) (this->cap * 1.5f) : this->cap + 1) : size;
         this->list = realloc(this->list, this->cap);
         if (!this->list) {
             FATAL("Out of memory. Cannot realloc VSContainer to size %llu", this->cap);
@@ -90,47 +90,50 @@ VSContainer_sort(VSContainer this, enum VSContainer_SortType type, VSContainer_C
 
 struct VSContainer_SortStats sort_bubbleSort
         (VooSchedule *list, int length, VSContainer_Comparator comparator) {
+    struct VSContainer_SortStats stats = {0};
     for (int i = 0; i < length - 1; i++) {
         for (int j = (i + 1); j < length; j++) {
             if (comparator(list[j], list[i]) > 0) {
                 VooSchedule temp = list[i];
                 list[i] = list[j];
                 list[j] = temp;
+                stats.moves++;
             }
         }
     }
-    return (struct VSContainer_SortStats) {};
+    return (stats);
 }
 
 struct VSContainer_SortStats sort_selectionSort
         (VooSchedule *list, int length, VSContainer_Comparator comparator) {
-
-    int         j, min;
+    struct VSContainer_SortStats stats = {0};
+    int j, min;
     VooSchedule aux;
-    for (int    i = 0; i < (length - 1); i++) {
-        min    = i;
+    for (int i = 0; i < (length - 1); i++) {
+        min = i;
         for (j = (i + 1); j < length; j++) {
             if (list[j] < list[min])
                 min = j;
         }
         if (comparator(list[i], list[min]) != 0) {
             aux = list[i];
-            list[i]   = list[min];
+            list[i] = list[min];
             list[min] = aux;
+            stats.moves++;
         }
     }
-    return (struct VSContainer_SortStats) {};
+    return (stats) ;
 }
 
 struct VSContainer_SortStats sort_insertionSort
         (VooSchedule *list, int length, VSContainer_Comparator comparator) {
-
-    int         j;
+    struct VSContainer_SortStats stats = {0};
+    int j;
     VooSchedule escolhido;
 
     for (int i = 1; i < length; i++) {
         escolhido = list[i];
-        j         = i - 1;
+        j = i - 1;
 
         while ((j >= 0) && comparator(list[j], escolhido) < 0) {
             list[j + 1] = list[j];
@@ -138,16 +141,17 @@ struct VSContainer_SortStats sort_insertionSort
         }
 
         list[j + 1] = escolhido;
+        stats.moves++;
     }
-    return (struct VSContainer_SortStats) {};
+    return (stats);
 }
 
 struct VSContainer_SortStats sort_shellSort
         (VooSchedule *list, int length, VSContainer_Comparator comparator) {
-
-    int         i, j;
+    struct VSContainer_SortStats stats = {0};
+    int i, j;
     VooSchedule value;
-    int         gap = 1;
+    int gap = 1;
     while (gap > length) {
         gap = 3 * gap + 1;
     }
@@ -155,49 +159,61 @@ struct VSContainer_SortStats sort_shellSort
         gap /= 3;
         for (i = gap; i < length; i++) {
             value = list[i];
-            j     = i;
+            j = i;
             while (j >= gap && comparator(value, list[j - gap]) < 0) {
                 list[j] = list[j - gap];
                 j = j - gap;
             }
             list[j] = value;
+            stats.moves++;
         }
     }
-    return (struct VSContainer_SortStats) {};
+    return (stats);
 }
 
-void sort_QuickSort_Particao(int Esq, int Dir, int *i, int *j, VooSchedule *A, VSContainer_Comparator comparator) {
+void sort_QuickSort_Particao(int Esq, int Dir, int *i, int *j, VooSchedule *list, VSContainer_Comparator comparator,
+                             struct VSContainer_SortStats *stats) {
     VooSchedule pivo, aux;
     *i = Esq;
     *j = Dir;
-    pivo = A[(*i + *j) / 2];
+    pivo = list[(*i + *j) / 2];
 
     do {
-        while (comparator(pivo, A[*i]) > 0) (*i)++;
-        while (comparator(pivo, A[*j]) < 0) (*j)--;
+        while (comparator(pivo, list[*i]) > 0) (*i)++;
+        while (comparator(pivo, list[*j]) < 0) (*j)--;
         if (*i <= *j) {
-            aux = A[*i];
-            A[*i] = A[*j];
-            A[*j] = aux;
+            aux = list[*i];
+            list[*i] = list[*j];
+            list[*j] = aux;
             (*i)++;
             (*j)--;
         }
     } while (*i <= *j);
 }
 
-void sort_QuickSort_Ordena(int Esq, int Dir, VooSchedule *A, VSContainer_Comparator comparator) {
+void sort_QuickSort_Ordena(int Esq, int Dir, VooSchedule *list, VSContainer_Comparator comparator,
+                           struct VSContainer_SortStats *stats) {
     int i, j;
-    sort_QuickSort_Particao(Esq, Dir, &i, &j, A, comparator);
-    if (Esq < j)sort_QuickSort_Ordena(Esq, j, A, comparator);
-    if (i < Dir)sort_QuickSort_Ordena(i, Dir, A, comparator);
+    sort_QuickSort_Particao(Esq, Dir, &i, &j, list, comparator, stats);
+
+    if (Esq < j) {
+        sort_QuickSort_Ordena(Esq, j, list, comparator, stats);
+    }
+
+    if (i < Dir) {
+        sort_QuickSort_Ordena(i, Dir, list, comparator, stats);
+    }
+
 }
 
 struct VSContainer_SortStats sort_quickSort(VooSchedule *list, int length, VSContainer_Comparator comparator) {
-    sort_QuickSort_Ordena(0, length - 1, list, comparator);
-    return (struct VSContainer_SortStats) {};
+    struct VSContainer_SortStats stats = {0};
+    sort_QuickSort_Ordena(0, length - 1, list, comparator, &stats);
+    return stats;
 }
 
 struct VSContainer_SortStats sort_HeapSort(VooSchedule *list, int length, VSContainer_Comparator comparator) {
+    struct VSContainer_SortStats stats = {0};
     int i = length / 2, pai, filho;
     VooSchedule t;
     while (true) {
@@ -210,19 +226,21 @@ struct VSContainer_SortStats sort_HeapSort(VooSchedule *list, int length, VSCont
             t = list[length];
             list[length] = list[0];
         }
-        pai   = i;
+        pai = i;
         filho = i * 2 + 1;
         while (filho < length) {
             if ((filho + 1 < length) && (list[filho + 1] > list[filho]))
                 filho++;
-            if (comparator(list[filho],t)>0) {
+            if (comparator(list[filho], t) > 0) {
                 list[pai] = list[filho];
-                pai   = filho;
+                pai = filho;
                 filho = pai * 2 + 1;
+                stats.moves++;
             } else {
                 break;
             }
         }
         list[pai] = t;
+        return (stats);
     }
 }
