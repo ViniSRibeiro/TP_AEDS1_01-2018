@@ -55,7 +55,7 @@ void allSortsAndPrint(VSContainer container) {
             PRINTLN("| %s sorting - Condition: %s", sorts[i].name, comparators[j].name);
             PRINTLN("| Total time  : %f seg", time);
             PRINTLN("| Comparisons : %d", stats.comps);
-            PRINTLN("| Moves       : %d seg", stats.moves);
+            PRINTLN("| Moves       : %d", stats.moves);
             PRINTLN("+-----------------------\n");
         }
         VSContainer_deleteClone(instance);
