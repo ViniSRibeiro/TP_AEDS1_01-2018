@@ -57,6 +57,7 @@ void allSortsAndPrint(VSContainer container) {
             PRINTLN("| Comparisons : %d", stats.comps);
             PRINTLN("| Moves       : %d", stats.moves);
             PRINTLN("+-----------------------\n");
+            fflush(stdout);
         }
         VSContainer_deleteClone(instance);
     }
