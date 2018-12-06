@@ -41,6 +41,7 @@ bool parse_file(struct DataInfo info, FILE *file, VSContainer *output) {
         }
         VSContainer_insertAt(container, indexList[i], schedule);
     }
+    VSContainer_fillEmpty(container, info.vectorSize);
 
     *output = container;
     return true;
@@ -72,7 +73,8 @@ VSContainer random_data(struct DataInfo info) {
 
     for (size_t i = 0; i < info.toFill; ++i) {
         VooSchedule schedule = VooSchedule_new();
-        for (size_t j        = 0; j < info.eachMatrix; ++i) {
+
+        for (size_t j = 0; j < info.eachMatrix; ++j) {
             VooSchedule_insert(
                     schedule,
                     Voo_new(
@@ -86,6 +88,6 @@ VSContainer random_data(struct DataInfo info) {
         }
         VSContainer_insertAt(container, indexList[i], schedule);
     }
-
+    VSContainer_fillEmpty(container, info.vectorSize);
     return container;
 }
