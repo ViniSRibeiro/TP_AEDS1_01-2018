@@ -7,7 +7,9 @@
 
 static inline Time readTime(FILE *file) {
     int hour, minute;
-    fscanf(file, "%d:%d", &hour, &minute); // NOLINT(cert-err34-c)
+    if(!fscanf(file, "%d:%d", &hour, &minute)) { // NOLINT(cert-err34-c)
+        FATAL("Missing more flight data");
+    }
     return Time_new((uint8_t) hour, (uint8_t) minute);
 }
 
@@ -17,7 +19,9 @@ static inline Voo readFlight(FILE *file) {
     char  takeOffAirport[4];
     char  landingAirport[4];
     short runway;
-    fscanf(file, "%s %s %hd", takeOffAirport, landingAirport, &runway); // NOLINT(cert-err34-c)
+    if(!fscanf(file, "%s %s %hd", takeOffAirport, landingAirport, &runway)) { // NOLINT(cert-err34-c)
+        FATAL("Invalid flight data");
+    }
     return Voo_new(
             FlightData_new(takeOff, Aeroporto_get(takeOffAirport), 0),
             FlightData_new(landing, Aeroporto_get(landingAirport), (int8_t) runway)
@@ -31,12 +35,13 @@ bool parse_file(struct DataInfo info, FILE *file, VSContainer *output) {
 
     for (size_t i = 0; i < info.toFill; ++i) {
         if (!fscanf(file, "%ud", &indexList[i])) { // NOLINT(cert-err34-c)
+            FATAL("Missing more indexes");
         }
     }
 
     for (size_t i = 0; i < info.toFill; ++i) {
         VooSchedule schedule = VooSchedule_new();
-        for (size_t j        = 0; j < info.eachMatrix; ++i) {
+        for (size_t j        = 0; j < info.eachMatrix; ++j) {
             VooSchedule_insert(schedule, readFlight(file));
         }
         VSContainer_insertAt(container, indexList[i], schedule);
