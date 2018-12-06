@@ -6,6 +6,9 @@
 #include "VooList.h"
 #include "VooScheduleItem.h"
 
+const size_t WIDTH = 24;
+const size_t HEIGHT = 24;
+
 typedef struct __VooSchedule *VooSchedule;
 
 struct VooSchedule_SearchResult {
@@ -32,6 +35,8 @@ struct VooSchedule_SearchResult VooSchedule_findMostRecentUpdated(VooSchedule);
 struct VooSchedule_SearchResult VooSchedule_findLessRecentUpdated(VooSchedule);
 
 bool VooSchedule_isSparse(VooSchedule);
+
+VooScheduleItem VooSchedule_getData(VooSchedule this, int x, int y);
 
 void VooSchedule_delete(VooSchedule instance);
 
