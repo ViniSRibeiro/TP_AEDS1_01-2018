@@ -14,7 +14,7 @@ struct __VooSchedule {
 };
 
 VooSchedule VooSchedule_new() {
-    return VooSchedule_newId((uint32_t) lrand48());
+    return VooSchedule_newId((uint32_t) rand()); // NOLINT(cert-msc30-c,cert-msc50-cpp)
 }
 
 VooSchedule VooSchedule_newId(uint32_t id) {

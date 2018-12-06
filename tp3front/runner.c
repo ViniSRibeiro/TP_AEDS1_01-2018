@@ -35,12 +35,12 @@ struct SortAction {
 };
 
 struct SortAction sorts[]    = {
-        {"Bubble",    VSCONTAINER_BUBBLE},
-        {"Selection", VSCONTAINER_SELECTION},
-        {"Insertion", VSCONTAINER_INSERTION},
-        {"Shell",     VSCONTAINER_SHELL},
+        {"Heap",      VSCONTAINER_HEAP},
         {"Quick",     VSCONTAINER_QUICK},
-        {"Heap",      VSCONTAINER_HEAP}
+        {"Shell",     VSCONTAINER_SHELL},
+        {"Insertion", VSCONTAINER_INSERTION},
+        {"Selection", VSCONTAINER_SELECTION},
+        {"Bubble",    VSCONTAINER_BUBBLE},
 };
 const uint32_t    sortsCount = sizeof(sorts) / sizeof(struct SortAction);
 
@@ -48,15 +48,18 @@ void allSortsAndPrint(VSContainer container) {
     for (uint32_t i = 0; i < sortsCount; ++i) {
         VSContainer instance = VSContainer_clone(container);
         for (uint32_t j = 0; j < numOfComparators(); ++j) {
+            PRINTLN("+----------------------------------");
+            PRINTLN("| Running %s sorting - Condition: %s", sorts[i].name, comparators[j].name);
+            fflush(stdout);
             double                       time  = get_time();
             struct VSContainer_SortStats stats = VSContainer_sort(instance, sorts[i].type, comparators[j].action);
             time = get_time() - time;
-            PRINTLN("+-----------------------");
-            PRINTLN("| %s sorting - Condition: %s", sorts[i].name, comparators[j].name);
+            PRINTLN("+----------------------------------");
+            PRINTLN("| DONE, results: ");
             PRINTLN("| Total time  : %f seg", time);
             PRINTLN("| Comparisons : %d", stats.comps);
             PRINTLN("| Moves       : %d", stats.moves);
-            PRINTLN("+-----------------------\n");
+            PRINTLN("+----------------------------------\n");
             fflush(stdout);
         }
         VSContainer_deleteClone(instance);
