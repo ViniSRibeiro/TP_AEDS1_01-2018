@@ -46,8 +46,8 @@ const uint32_t    sortsCount = sizeof(sorts) / sizeof(struct SortAction);
 
 void allSortsAndPrint(VSContainer container) {
     for (uint32_t i = 0; i < sortsCount; ++i) {
-        VSContainer   instance = VSContainer_clone(container);
-        for (uint32_t j        = 0; j < numOfComparators(); ++j) {
+        VSContainer instance = VSContainer_clone(container);
+        for (uint32_t j = 0; j < numOfComparators(); ++j) {
             double                       time  = get_time();
             struct VSContainer_SortStats stats = VSContainer_sort(instance, sorts[i].type, comparators[j].action);
             time = get_time() - time;
@@ -58,6 +58,6 @@ void allSortsAndPrint(VSContainer container) {
             PRINTLN("| Moves       : %d seg", stats.moves);
             PRINTLN("+-----------------------\n");
         }
-        VSContainer_delete(instance);
+        VSContainer_deleteClone(instance);
     }
 }
