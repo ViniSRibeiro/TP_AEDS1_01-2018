@@ -50,7 +50,7 @@ bool parse(int argc, char **argv) {
     }
 
     allSortsAndPrint(container);
-    VSContainer_delete(container);
+//    VSContainer_delete(container);
 
     return true;
 }
