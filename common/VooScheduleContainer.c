@@ -26,14 +26,14 @@ static struct VSContainer_SortStats sort_HeapSort
 
 struct __VSContainer {
     VooSchedule *list;
-    size_t len;
-    size_t cap;
+    size_t      len;
+    size_t      cap;
 };
 
 VSContainer VSContainer_new(size_t initialSize) {
     VSContainer instance = malloc(sizeof(struct __VSContainer));
     if (initialSize) {
-        instance->list = malloc(sizeof(VooSchedule));
+        instance->list = calloc(initialSize, sizeof(VooSchedule));
         if (!instance->list) {
             FATAL("Out of memory. Cannot alloc VSContainer of size %llu", initialSize);
         }
@@ -41,15 +41,15 @@ VSContainer VSContainer_new(size_t initialSize) {
         instance->cap = initialSize;
     } else {
         instance->list = NULL;
-        instance->len = 0;
-        instance->cap = 0;
+        instance->len  = 0;
+        instance->cap  = 0;
     }
     return instance;
 }
 
 static void validateSize(VSContainer this, size_t size) {
     if (this->cap < size) {
-        this->cap = (size - this->cap) == 1 ? (this->cap >= 3 ? (int) (this->cap * 1.5f) : this->cap + 1) : size;
+        this->cap  = (size - this->cap) == 1 ? (this->cap >= 3 ? (int) (this->cap * 1.5f) : this->cap + 1) : size;
         this->list = realloc(this->list, this->cap);
         if (!this->list) {
             FATAL("Out of memory. Cannot realloc VSContainer to size %llu", this->cap);
@@ -86,6 +86,16 @@ VSContainer_sort(VSContainer this, enum VSContainer_SortType type, VSContainer_C
         default:
             FATAL("Runtime exception: Invalid sort type");
     }
+}
+
+void VSContainer_delete(VSContainer this) {
+    for (size_t i = 0; i < this->len; ++i) {
+        if (this->list[i] != NULL) {
+            VooSchedule_delete(this->list[i]);
+        }
+    }
+    free(this->list);
+    free(this);
 }
 
 struct VSContainer_SortStats sort_bubbleSort
