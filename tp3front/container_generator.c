@@ -40,13 +40,15 @@ bool parse_file(struct DataInfo info, FILE *file, VSContainer *output) {
     }
 
     for (size_t i = 0; i < info.toFill; ++i) {
-        VooSchedule schedule = VooSchedule_new();
+        VooSchedule schedule = VooSchedule_newId(indexList[i]);
         for (size_t j        = 0; j < info.eachMatrix; ++j) {
             VooSchedule_insert(schedule, readFlight(file));
         }
-        VSContainer_insertAt(container, indexList[i], schedule);
+        VSContainer_insert(container, schedule);
     }
     VSContainer_fillEmpty(container, info.vectorSize);
+
+    free(indexList);
 
     *output = container;
     return true;
@@ -70,14 +72,8 @@ VSContainer random_data(struct DataInfo info) {
     VSContainer container = VSContainer_new(info.vectorSize);
     srand((unsigned int) time(NULL)); // NOLINT(cert-msc32-c,cert-msc51-cpp)
 
-    uint32_t *indexList = malloc(sizeof(uint32_t) * info.toFill);
-
     for (size_t i = 0; i < info.toFill; ++i) {
-        indexList[i] = (uint32_t) (rand() % info.vectorSize); // NOLINT(cert-msc30-c,cert-msc50-cpp)
-    }
-
-    for (size_t i = 0; i < info.toFill; ++i) {
-        VooSchedule schedule = VooSchedule_new();
+        VooSchedule schedule = VooSchedule_newId((uint32_t) (rand() % info.vectorSize)); // NOLINT(cert-msc30-c,cert-msc50-cpp)
 
         for (size_t j = 0; j < info.eachMatrix; ++j) {
             VooSchedule_insert(
@@ -91,7 +87,7 @@ VSContainer random_data(struct DataInfo info) {
                     )
             );
         }
-        VSContainer_insertAt(container, indexList[i], schedule);
+        VSContainer_insert(container, schedule);
     }
     VSContainer_fillEmpty(container, info.vectorSize);
     return container;

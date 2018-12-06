@@ -4,6 +4,7 @@
 
 
 #include <memory.h>
+#include <limits.h>
 #include "VooScheduleContainer.h"
 
 
@@ -73,11 +74,11 @@ void VSContainer_insertAt(VSContainer this, size_t pos, VooSchedule schedule) {
 
 void VSContainer_fillEmpty(VSContainer this, size_t length) {
     if (this->len < length) {
-        VSContainer_insertAt(this, --length, VooSchedule_new());
+        VSContainer_insertAt(this, --length, VooSchedule_newId(UINT32_MAX));
     }
     for (size_t i = 0; i < length; ++i) {
         if(this->list[i] == NULL) {
-            VSContainer_insertAt(this, i, VooSchedule_new());
+            VSContainer_insertAt(this, i, VooSchedule_newId(UINT32_MAX));
         }
     }
 }
