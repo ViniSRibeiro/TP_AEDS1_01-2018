@@ -32,6 +32,15 @@ void Time_updateToNow(Time this) {
 }
 
 int Time_compareTo(Time this, Time other) {
+    if(this == NULL || other == NULL) {
+        if(this != NULL) {
+            return 1;
+        }
+        if(other != NULL) {
+            return 1;
+        }
+        return 0;
+    }
     if (this->Hour < other->Hour)
         return -1;
     if (this->Hour > other->Hour)

@@ -8,8 +8,6 @@ for (uint8_t x = 0; x < WIDTH; ++x) \
     }\
 (void)0
 
-#define WIDTH 24
-#define HEIGHT 24
 struct __VooSchedule {
     VooScheduleItem data[WIDTH][HEIGHT];
 };
@@ -138,6 +136,10 @@ bool VooSchedule_isSparse(VooSchedule this) {
             }
     );
     return any > total;
+}
+
+VooScheduleItem VooSchedule_getData(VooSchedule this, int x, int y) {
+    return this->data[x][y];
 }
 
 void VooSchedule_delete(VooSchedule instance) {
