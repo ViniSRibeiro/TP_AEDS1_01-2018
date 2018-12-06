@@ -6,8 +6,8 @@
 #include "VooList.h"
 #include "VooScheduleItem.h"
 
-const size_t WIDTH = 24;
-const size_t HEIGHT = 24;
+#define WIDTH ((size_t) 24)
+#define HEIGHT ((size_t) 24)
 
 typedef struct __VooSchedule *VooSchedule;
 
