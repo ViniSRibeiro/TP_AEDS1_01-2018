@@ -20,27 +20,45 @@ static struct VSContainer_SortStats sort_shellSort
 
 struct __VSContainer {
     VooSchedule *list;
-    int len;
-    int cap;
+    size_t len;
+    size_t cap;
 };
 
-VSContainer VSContainer_new() {
+VSContainer VSContainer_new(size_t initialSize) {
     VSContainer instance = malloc(sizeof(struct __VSContainer));
-    instance->list = NULL;
-    instance->len = 0;
-    instance->cap = 0;
+    if(initialSize) {
+        instance->list = malloc(sizeof(VooSchedule));
+        if(!instance->list) {
+            FATAL("Out of memory. Cannot alloc VSContainer of size %llu", initialSize);
+        }
+        instance->len = 0;
+        instance->cap = initialSize;
+    } else {
+        instance->list = NULL;
+        instance->len  = 0;
+        instance->cap  = 0;
+    }
     return instance;
 }
 
-void VSContainer_insert(VSContainer this, VooSchedule schedule) {
-    if (this->len + 1 >= this->cap) { // Increase
-        this->cap = this->cap >= 3 ? (int) (this->cap * 1.5f) : this->cap + 1;
+static void validateSize(VSContainer this, size_t size) {
+    if(this->cap < size) {
+        this->cap = (size - this->cap) == 1 ? (this->cap >= 3 ? (int) (this->cap * 1.5f) : this->cap + 1) : size;
         this->list = realloc(this->list, this->cap);
         if (!this->list) {
-            FATAL("Out of memory");
+            FATAL("Out of memory. Cannot realloc VSContainer to size %llu", this->cap);
         }
     }
-    this->list[this->len++] = schedule;
+}
+
+void VSContainer_insert(VSContainer this, VooSchedule schedule) {
+    validateSize(this, this->len++);
+    this->list[this->len] = schedule;
+}
+
+void VSContainer_insertAt(VSContainer this, size_t pos, VooSchedule schedule) {
+    validateSize(this, pos + 1);
+    this->list[pos] = schedule;
 }
 
 struct VSContainer_SortStats

@@ -27,9 +27,11 @@ enum VSContainer_SortType {
     VSCONTAINER_HEAP
 };
 
-VSContainer VSContainer_new();
+VSContainer VSContainer_new(size_t initialSize);
 
 void VSContainer_insert(VSContainer, VooSchedule);
+
+void VSContainer_insertAt(VSContainer, size_t pos, VooSchedule);
 
 struct VSContainer_SortStats VSContainer_sort(VSContainer, enum VSContainer_SortType, VSContainer_Comparator);
 
