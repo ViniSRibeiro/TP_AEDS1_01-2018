@@ -9,15 +9,25 @@ for (uint8_t x = 0; x < WIDTH; ++x) \
 (void)0
 
 struct __VooSchedule {
+    uint32_t id;
     VooScheduleItem data[WIDTH][HEIGHT];
 };
 
 VooSchedule VooSchedule_new() {
+    return VooSchedule_newId((uint32_t) lrand48());
+}
+
+VooSchedule VooSchedule_newId(uint32_t id) {
     VooSchedule instance = malloc(sizeof(struct __VooSchedule));
+    instance->id = id;
     for (int x = 0; x < WIDTH; ++x)
         for (int y = 0; y < HEIGHT; ++y)
             instance->data[x][y] = VooScheduleItem_new();
     return instance;
+}
+
+uint32_t VooSchedule_getId(VooSchedule this) {
+    return this->id;
 }
 
 void VooSchedule_insert(VooSchedule this, Voo voo) {

@@ -18,6 +18,10 @@ struct VooSchedule_SearchResult {
 
 VooSchedule VooSchedule_new();
 
+VooSchedule VooSchedule_newId(uint32_t);
+
+uint32_t VooSchedule_getId(VooSchedule);
+
 void VooSchedule_insert(VooSchedule, Voo);
 
 Voo VooSchedule_remove(VooSchedule, VID);
